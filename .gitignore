@@ -1,0 +1,18 @@
+node_modules/
+# Ignore the build output directory
+dist/
+# Ignore the test output directory
+coverage/
+# Ignore environment variables file
+.env
+# Ignore logs
+logs/
+
+# Ignore temporary files
+*.tmp
+# Ignore IDE specific files
+.vscode/
+# Ignore OS generated files
+.DS_Store
+# Ignore package lock files
+package-lock.json
