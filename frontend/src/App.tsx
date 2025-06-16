@@ -1,11 +1,12 @@
 import './App.css'
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card } from './components/ui/card'
 import { getProducts } from './api/services/productService';
 import type { Product } from './types/product';
 import { Button } from './components/ui/button';
-import { Modal } from './components/modal';
-import AddNewProduct from './components/modal_content/addNewProduct';
+import { Modal } from './components/ui/modal';
+import AddNewProduct from './components/content/addNewProduct';
+import { TableProducts } from './components/ui/tableProducts';
 
 type ModalType = 'create' | 'update' | null;
 
@@ -17,12 +18,17 @@ export default function App() {
   const openModal = (type: ModalType) => setCurrentModal(type);
   const closeModal = () => setCurrentModal(null);
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const modalContents = {
     create: {
       title: 'Create Product',
       description: 'Create a new product.',
       content: <AddNewProduct 
                   onSuccess={() =>{
+                    fetchProducts();
                     closeModal();
                   }}/>,
       size: 'md'
@@ -35,8 +41,7 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchProducts = async () => {
       try {
         const response = await getProducts();
         console.log('Fetched products:', response);
@@ -45,8 +50,6 @@ export default function App() {
         console.error('Error fetching products:', error);
       }
     };
-    fetchProducts();
-  }, []);
 
   return (
     <>
@@ -56,6 +59,8 @@ export default function App() {
             New Product
           </Button>
         </Card>
+
+        <TableProducts products={products} />
 
         {currentModal && (
           <Modal

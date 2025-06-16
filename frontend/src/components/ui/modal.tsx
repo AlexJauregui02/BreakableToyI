@@ -1,6 +1,6 @@
 
 import type { ReactNode } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./dialog";
 
 type ModalProps = {
   isOpen: boolean;
