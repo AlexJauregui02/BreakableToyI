@@ -60,7 +60,7 @@ export default function App() {
           </Button>
         </Card>
 
-        <TableProducts products={products} />
+        <TableProducts products={products} onStockChange={fetchProducts} />
 
         {currentModal && (
           <Modal

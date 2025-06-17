@@ -25,6 +25,7 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
         try {
             const productData = {
                 ...formData,
+                id: 0,
                 expirationDate: new Date(formData.expirationDate),
                 unitPrice: Number(formData.unitPrice),
                 inStock: Number(formData.inStock),
@@ -63,13 +64,16 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
                     />
                 </label>
                 <label className='text-sm font-medium leading-none'>
-                    Expiration Date:
+                    In Stock:
                     <input
-                        type="date"
-                        name="expirationDate"
-                        value={formData.expirationDate}
+                        type="number"
+                        name="inStock"
+                        value={formData.inStock}
                         onChange={handleChange}
                         className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
+                        min={0}
+                        max={100000}
+                        required
                     />
                 </label>
                 <label className='text-sm font-medium leading-none'>
@@ -83,6 +87,16 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
                         min={0}
                         max={100000}
                         required
+                    />
+                </label>
+                <label className='text-sm font-medium leading-none'>
+                    Expiration Date:
+                    <input
+                        type="date"
+                        name="expirationDate"
+                        value={formData.expirationDate}
+                        onChange={handleChange}
+                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
                     />
                 </label>
             </div>
