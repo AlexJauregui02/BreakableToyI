@@ -45,7 +45,7 @@ export default function App() {
       try {
         const response = await getProducts();
         console.log('Fetched products:', response);
-        setProducts(response);
+        setProducts(response ?? []);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -54,11 +54,13 @@ export default function App() {
   return (
     <>
       <div className='flex flex-col items-center justify-center'>
-        <Card className='w-1/2 mt-10'>
-          <Button className='mx-15' variant='outline' onClick={() => {openModal('create')}}>
-            New Product
-          </Button>
+        <Card className='w-1/2 mt-10 rounded-sm'>
+          Hola
         </Card>
+
+        <Button className='mx-15 mt-10' variant='outline' onClick={() => {openModal('create')}}>
+          New Product
+        </Button>
 
         <TableProducts products={products} onStockChange={fetchProducts} />
 
