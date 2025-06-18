@@ -21,7 +21,6 @@ public class ProductService {
         return repository.findAll();
     }
 
-    // Add all logic related to products here
     public Product createProduct(Product product) {
         product.setExpirationDate(LocalDate.now());
         product.setCreatedAt(LocalDateTime.now());
@@ -50,5 +49,7 @@ public class ProductService {
         repository.save(product);
     }
 
-
+    public void productDelete(Long id) {
+        repository.deleteById(id);
+    }
 }

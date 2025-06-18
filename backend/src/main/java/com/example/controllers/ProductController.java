@@ -5,6 +5,7 @@ import com.example.models.Product;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,6 +69,12 @@ public class ProductController {
         // Logic to mark a product as in stock
         productService.productInStock(id);
         System.out.println("Marking product as in stock");
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("api/products/{id}")
+    public ResponseEntity<Void> productDelete(@PathVariable Long id) {
+        productService.productDelete(id);
         return ResponseEntity.noContent().build();
     }
 }
