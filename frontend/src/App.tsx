@@ -5,7 +5,7 @@ import { getProducts } from './api/services/productService';
 import type { Product } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
-import AddNewProduct from './components/content/addNewProduct';
+import CreateEditProduct from './components/content/createEditProduct';
 import { TableProducts } from './components/ui/tableProducts';
 
 type ModalType = 'create' | 'update' | null;
@@ -14,9 +14,18 @@ export default function App() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
+  const [tempProduct, setTempProduct] = useState<Product | null>(null);
 
-  const openModal = (type: ModalType) => setCurrentModal(type);
-  const closeModal = () => setCurrentModal(null);
+  const openModal = (type: ModalType, data?: Product) => {
+    if (type === 'update' && data) {
+      setTempProduct(data);
+    }
+    setCurrentModal(type);
+  };
+  const closeModal = () => {
+    setCurrentModal(null);
+    setTempProduct(null);
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -26,7 +35,7 @@ export default function App() {
     create: {
       title: 'Create Product',
       description: 'Create a new product.',
-      content: <AddNewProduct 
+      content: <CreateEditProduct 
                   onSuccess={() =>{
                     fetchProducts();
                     closeModal();
@@ -36,20 +45,25 @@ export default function App() {
     update: {
       title: 'Update Product',
       description: 'Update an existing product.',
-      content: <div>Update Product Form</div>,
+      content: <CreateEditProduct 
+                  onSuccess={() =>{
+                    fetchProducts();
+                    closeModal();
+                  }} 
+                  data={tempProduct}/>,
       size: 'md'
     }
   };
 
   const fetchProducts = async () => {
-      try {
-        const response = await getProducts();
-        console.log('Fetched products:', response);
-        setProducts(response ?? []);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
+    try {
+      const response = await getProducts();
+      console.log('Fetched products:', response);
+      setProducts(response ?? []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   return (
     <>
@@ -62,7 +76,7 @@ export default function App() {
           New Product
         </Button>
 
-        <TableProducts products={products} onStockChange={fetchProducts} />
+        <TableProducts products={products} onStockChange={fetchProducts} editProduct={(data) => openModal('update', data)}/>
 
         {currentModal && (
           <Modal
