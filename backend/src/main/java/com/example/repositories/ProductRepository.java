@@ -1,6 +1,7 @@
 package com.example.repositories;
 
 import com.example.models.Product;
+import com.example.models.CustomPage;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,5 +10,6 @@ public interface ProductRepository {
     Product save(Product product);
     List<Product> findAll();
     Optional<Product> findById(Long id);
+    CustomPage<Product> getProducts(String nameFilter, int page, int size);
     void deleteById(Long id);
 }

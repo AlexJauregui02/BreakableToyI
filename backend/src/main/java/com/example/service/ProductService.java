@@ -2,10 +2,10 @@ package com.example.service;
 
 import com.example.models.Product;
 import com.example.repositories.InMemoryProductRepository;
+import com.example.models.CustomPage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,8 @@ public class ProductService {
         this.repository = inMemoryRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return repository.findAll();
+    public CustomPage<Product> getProducts(String name, int page, int size) {
+        return repository.getProducts(name, page, size);
     }
 
     public Product createProduct(Product product) {

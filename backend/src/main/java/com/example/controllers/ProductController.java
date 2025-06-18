@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.models.Product;
+import com.example.models.CustomPage;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.ProductService;
@@ -24,13 +26,18 @@ public class ProductController {
         this.productService = productService;
     }
 
-
     // This method handles GET requests to retrieve all products
     @GetMapping("/api/products")
-	public List<Product> getAllProducts() {
-        System.out.println("Fetching all products");
+	public ResponseEntity<CustomPage<Product>> getProducts(
+        @RequestParam(required = false) String name,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        System.out.println("Fetching products");
 
-        return productService.getAllProducts();
+        CustomPage<Product> products = productService.getProducts(name, page, size); 
+
+        return ResponseEntity.ok(products);
     }
 
     // This method handles POST requests to retrieve a new product

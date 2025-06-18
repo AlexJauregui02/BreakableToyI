@@ -1,11 +1,13 @@
 package com.example.repositories;
 
 import com.example.models.Product;
+import com.example.models.CustomPage;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -44,6 +46,21 @@ public class InMemoryProductRepository implements ProductRepository {
     @Override
     public List<Product> findAll() {
         return new ArrayList<>(db.values());
+    }
+
+    @Override
+    public CustomPage<Product> getProducts(String nameFilter, int page, int size) {
+        List<Product> filtereProducts = db.values().stream()
+            .filter(p -> nameFilter == null || p.getName().contains(nameFilter))
+            .collect(Collectors.toList());
+
+        int totalItems = filtereProducts.size();
+        int start = page * size;
+        int end = Math.min(start + size, totalItems);
+
+        List<Product> paginateProducts = filtereProducts.subList(start, end);
+
+        return new CustomPage<>(paginateProducts, page, size, totalItems);
     }
 
     @Override
