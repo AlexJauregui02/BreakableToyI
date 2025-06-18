@@ -8,9 +8,10 @@ interface TableProductsProps {
     products: Product[];
     onStockChange: () => Promise<void>;
     editProduct?: (data: Product) => void;
+    deleteProduct?: (data: Product) => void;
 }
 
-export function TableProducts({ products, onStockChange, editProduct }: TableProductsProps) {
+export function TableProducts({ products, onStockChange, editProduct, deleteProduct }: TableProductsProps) {
     const [loadingId, setLoadingId] = useState<number | null>(null);
 
     const handleStockChange = async (product: Product) => {
@@ -61,10 +62,14 @@ export function TableProducts({ products, onStockChange, editProduct }: TablePro
                             <td className="px-6 py-2 whitespace-nowrap">{new Date(product.expirationDate).toLocaleDateString()}</td>
                             <td className="px-6 py-2 whitespace-nowrap">{product.inStock}</td>
                             <td className="px-6 py-2 whitespace-nowrap">
-                                <Button className="h-2 border-1 mr-2" onClick={() => { editProduct && editProduct(product) }}>
+                                <Button className="h-2 border-1 mr-2" 
+                                    onClick={() => { editProduct && editProduct(product) }}
+                                >
                                     Edit
                                 </Button>
-                                <Button className="h-2 border-1">
+                                <Button className="h-2 border-1"
+                                    onClick={() => { deleteProduct && deleteProduct(product) }}
+                                >
                                     Delete
                                 </Button>
                             </td>

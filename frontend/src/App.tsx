@@ -7,8 +7,9 @@ import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
 import CreateEditProduct from './components/content/createEditProduct';
 import { TableProducts } from './components/ui/tableProducts';
+import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
 
-type ModalType = 'create' | 'update' | null;
+type ModalType = 'create' | 'update' | 'delete' | null;
 
 export default function App() {
 
@@ -17,7 +18,7 @@ export default function App() {
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
 
   const openModal = (type: ModalType, data?: Product) => {
-    if (type === 'update' && data) {
+    if ((type === 'update' || type === 'delete') && data) {
       setTempProduct(data);
     }
     setCurrentModal(type);
@@ -52,6 +53,17 @@ export default function App() {
                   }} 
                   data={tempProduct}/>,
       size: 'md'
+    },
+    delete: {
+      title: 'Delte Product',
+      description: '',
+      content: <ConfirmDeleteProduct
+                  onSuccess={() =>{
+                    fetchProducts();
+                    closeModal();
+                  }} 
+                  data={tempProduct}/>,
+      size: 'md'
     }
   };
 
@@ -72,11 +84,20 @@ export default function App() {
           Hola
         </Card>
 
-        <Button className='mx-15 mt-10' variant='outline' onClick={() => {openModal('create')}}>
+        <Button 
+          className='mx-15 mt-10' 
+          variant='outline' 
+          onClick={() => {openModal('create')}}
+        >
           New Product
         </Button>
 
-        <TableProducts products={products} onStockChange={fetchProducts} editProduct={(data) => openModal('update', data)}/>
+        <TableProducts 
+          products={products} 
+          onStockChange={fetchProducts} 
+          editProduct={(data) => openModal('update', data)}
+          deleteProduct={(data) => openModal('delete', data)}
+        />
 
         {currentModal && (
           <Modal

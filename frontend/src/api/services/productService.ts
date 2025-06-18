@@ -37,3 +37,10 @@ export async function inStockProduct(productId: number): Promise<Product | undef
     return response;
 }
 
+export async function deleteProduct(productId: number): Promise<Product | undefined> {
+    const response = await fetchApi<Product>(`/products/${productId}`, {
+        method: "DELETE",
+        body: null,
+    });
+    return response;
+}
