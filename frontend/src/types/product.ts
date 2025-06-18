@@ -1,10 +1,8 @@
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   category: string;
   unitPrice: number;
-  expiresAt: Date;
+  expirationDate: Date;
   inStock: number;
-  createdAt: Date;
-  updatedAt: Date;
 }

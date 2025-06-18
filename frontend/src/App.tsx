@@ -1,85 +1,97 @@
 import './App.css'
-import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription } from './components/card'
+import { useEffect, useState } from 'react';
+import { Card } from './components/ui/card'
 import { getProducts } from './api/services/productService';
 import type { Product } from './types/product';
+import { Button } from './components/ui/button';
+import { Modal } from './components/ui/modal';
+import CreateEditProduct from './components/content/createEditProduct';
+import { TableProducts } from './components/ui/tableProducts';
 
-function App() {
-  console.log('App component rendered');
+type ModalType = 'create' | 'update' | null;
 
-  const productsInitial: Product[] = [
-    {
-      id: '1',
-      name: 'Producto 1',
-      category: 'Categoría 1',
-      unitPrice: 10.0,
-      expiresAt: new Date('2024-12-31'),
-      inStock: 100,
-      createdAt: new Date('2023-01-01'),
-      updatedAt: new Date('2023-01-02'),
+export default function App() {
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [currentModal, setCurrentModal] = useState<ModalType>(null);
+  const [tempProduct, setTempProduct] = useState<Product | null>(null);
+
+  const openModal = (type: ModalType, data?: Product) => {
+    if (type === 'update' && data) {
+      setTempProduct(data);
     }
-  ];
-
-  const [products, setProducts] = useState<Product[]>(productsInitial);
+    setCurrentModal(type);
+  };
+  const closeModal = () => {
+    setCurrentModal(null);
+    setTempProduct(null);
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await getProducts();
-        console.log('Fetched products:', response);
-        setProducts(response);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
     fetchProducts();
   }, []);
 
-  const handleButtonClick = () => {
-    console.log('Button clicked');
-    alert('Button clicked');
+  const modalContents = {
+    create: {
+      title: 'Create Product',
+      description: 'Create a new product.',
+      content: <CreateEditProduct 
+                  onSuccess={() =>{
+                    fetchProducts();
+                    closeModal();
+                  }}/>,
+      size: 'md'
+    },
+    update: {
+      title: 'Update Product',
+      description: 'Update an existing product.',
+      content: <CreateEditProduct 
+                  onSuccess={() =>{
+                    fetchProducts();
+                    closeModal();
+                  }} 
+                  data={tempProduct}/>,
+      size: 'md'
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await getProducts();
+      console.log('Fetched products:', response);
+      setProducts(response ?? []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
   };
 
   return (
     <>
-      <div className='border-1 border-black flex flex-col items-center justify-center'>
-        <Card className='w-1/2 mt-10'>
-          hola:
+      <div className='flex flex-col items-center justify-center'>
+        <Card className='w-1/2 mt-10 rounded-sm'>
+          Hola
         </Card>
-        <div>
-          <h1 className='text-2xl font-bold mb-4 border-1 border-black'>Lista de Productos</h1>
-          <ul className='list-disc pl-5 border-1 border-black'>
-            {products.map(product => (
-              <li key={product.id} className='mb-2'>
-                {product.name} - {product.category} - ${product.unitPrice.toFixed(2)} - Stock: {product.inStock}
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        <CardHeader>
-          hola
-        </CardHeader>
+        <Button className='mx-15 mt-10' variant='outline' onClick={() => {openModal('create')}}>
+          New Product
+        </Button>
 
-        <CardTitle className='w-1/2'>
-          Hola Mundo
-        </CardTitle>
+        <TableProducts products={products} onStockChange={fetchProducts} editProduct={(data) => openModal('update', data)}/>
 
-        <CardDescription className='w-1/2 border-1 border-black'>
-          Esta es una descripción de ejemplo para el componente Card.
-        </CardDescription>
+        {currentModal && (
+          <Modal
+            isOpen={!!currentModal}
+            onClose={closeModal}
+            title={modalContents[currentModal].title}
+            description={modalContents[currentModal].description}
+            size='md'
+          >
+            {modalContents[currentModal].content}
 
-        <button 
-          className='bg-blue-500 text-white p-2 rounded mt-4'
-          onClick={() => handleButtonClick()}
-        >
-          Botón de ejemplo
-        </button>
-
+          </Modal>
+        )}
 
       </div>
     </>
   )
 }
-
-export default App
