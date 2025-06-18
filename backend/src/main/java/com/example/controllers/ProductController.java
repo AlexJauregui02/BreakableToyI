@@ -15,12 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.ProductService;
 
-// This class is a REST controller for managing products
 @RestController
 public class ProductController {
 
     private final ProductService productService;
-    //private static final int PAGE_SIZE = 10;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -57,7 +55,6 @@ public class ProductController {
     // This method handles POST requests to mark a product as out of stock
     @PostMapping("/api/products/{id}/outofstock")
     public ResponseEntity<Void> productOutOfStock(@PathVariable Long id) {
-        // Logic to delete a product
         productService.productOutOfStock(id);
 
         return ResponseEntity.noContent().build();
@@ -66,12 +63,12 @@ public class ProductController {
     // This method handles PUT requests to mark a product as in stock
     @PutMapping("/api/products/{id}/inStock")
     public ResponseEntity<Void> productInStock(@PathVariable Long id) {
-        // Logic to mark a product as in stock
         productService.productInStock(id);
         System.out.println("Marking product as in stock");
         return ResponseEntity.noContent().build();
     }
 
+    // This Method handles DELETE requests to delete an specific product
     @DeleteMapping("api/products/{id}")
     public ResponseEntity<Void> productDelete(@PathVariable Long id) {
         productService.productDelete(id);
