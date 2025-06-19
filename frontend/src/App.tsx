@@ -1,6 +1,5 @@
 import './App.css'
 import { useEffect, useState } from 'react';
-import { Card } from './components/ui/card'
 import { getProducts } from './api/services/productService';
 import type { Product } from './types/product';
 import { Button } from './components/ui/button';
@@ -8,11 +7,15 @@ import { Modal } from './components/ui/modal';
 import CreateEditProduct from './components/content/createEditProduct';
 import { TableProducts } from './components/ui/tableProducts';
 import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
+import FilterProducts from './components/content/filterProducts';
 
 type ModalType = 'create' | 'update' | 'delete' | null;
 
 export default function App() {
 
+  const [nameFilter, setNameFilter] = useState<String>('');
+  const [categoryFilter, setCategoryFilter] = useState<String>('');
+  const [availabilityFilter, setAvailabilityFilter] = useState<String>('');
   const [products, setProducts] = useState<Product[]>([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
@@ -23,14 +26,31 @@ export default function App() {
     }
     setCurrentModal(type);
   };
+
   const closeModal = () => {
     setCurrentModal(null);
     setTempProduct(null);
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const fetchProducts = async (
+    name = nameFilter,
+    category = categoryFilter,
+    availability = availabilityFilter
+  ) => {
+    try {
+      const response = await getProducts(name,category,availability);
+      setProducts(response?.content ?? []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const handleFilters = async (name: String, category: String, availability: String) => {
+    setNameFilter(name);
+    setCategoryFilter(category);
+    setAvailabilityFilter(availability);
+    await fetchProducts(name, category, availability);
+  };
 
   const modalContents = {
     create: {
@@ -55,7 +75,7 @@ export default function App() {
       size: 'md'
     },
     delete: {
-      title: 'Delte Product',
+      title: 'Delete Product',
       description: '',
       content: <ConfirmDeleteProduct
                   onSuccess={() =>{
@@ -67,22 +87,17 @@ export default function App() {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      const response = await getProducts();
-      console.log('Fetched products:', response);
-      setProducts(response ?? []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
     <>
       <div className='flex flex-col items-center justify-center'>
-        <Card className='w-1/2 mt-10 rounded-sm'>
-          Hola
-        </Card>
+
+        <FilterProducts
+          filterSearch={(name, category, size) => {handleFilters(name, category, size)}}
+        />
 
         <Button 
           className='mx-15 mt-10' 

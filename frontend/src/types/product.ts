@@ -6,3 +6,10 @@ export interface Product {
   expirationDate: Date;
   inStock: number;
 }
+
+export interface CustomPage<T> {
+  content: T[],
+  pageNumber: number,
+  pageSize: number,
+  totalElements: number
+}

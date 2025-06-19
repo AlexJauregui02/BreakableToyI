@@ -16,7 +16,7 @@ export default function CreateEditProduct({
         category: data?.category || '',
         expirationDate: data?.expirationDate,
         unitPrice: data?.unitPrice?.toString() || '',
-        inStock: data?.inStock?.toString() || '0',
+        inStock: data?.inStock?.toString() || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

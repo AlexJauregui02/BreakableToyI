@@ -1,8 +1,8 @@
 import { fetchApi } from "../client";
-import type { Product } from "../../types/product";
+import type { Product, CustomPage } from "../../types/product";
 
-export async function getProducts(): Promise<Product[] | undefined> {
-    return fetchApi<Product[]>("/products");
+export async function getProducts(name: String, page: String, size: String): Promise<CustomPage<Product> | undefined> {
+    return fetchApi<CustomPage<Product>>(`/products?name=${name}&page=${page}&size=${size}`);
 }
 
 export async function createProduct(product: Product): Promise<Product | undefined> {
