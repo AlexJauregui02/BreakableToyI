@@ -41,6 +41,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    // This method handles GET request to retrieve the general metrics
     @GetMapping("/api/products/metrics")
 	public ResponseEntity<List<Map<String, Object>>> getMetrics() {
         System.out.println("Fetching metrics");
