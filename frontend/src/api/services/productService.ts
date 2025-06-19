@@ -44,3 +44,7 @@ export async function deleteProduct(productId: number): Promise<Product | undefi
     });
     return response;
 }
+
+export async function getMetrics(): Promise<[] | undefined> {
+    return fetchApi<[]>("/products/metrics");
+}

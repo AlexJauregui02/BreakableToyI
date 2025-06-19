@@ -1,11 +1,12 @@
 import './App.css'
 import { useEffect, useState } from 'react';
-import { getProducts } from './api/services/productService';
+import { getProducts, getMetrics } from './api/services/productService';
 import type { Product } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
 import CreateEditProduct from './components/content/createEditProduct';
 import { TableProducts } from './components/ui/tableProducts';
+import { MetricsTable } from './components/content/metricsTable';
 import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
 import FilterProducts from './components/content/filterProducts';
 
@@ -17,6 +18,7 @@ export default function App() {
   const [categoryFilter, setCategoryFilter] = useState<String>('');
   const [availabilityFilter, setAvailabilityFilter] = useState<String>('');
   const [products, setProducts] = useState<Product[]>([]);
+  const [metrics, setMetrics] = useState([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
 
@@ -42,6 +44,14 @@ export default function App() {
       setProducts(response?.content ?? []);
     } catch (error) {
       console.error('Error fetching products:', error);
+    }
+
+    try {
+      const response = await getMetrics();
+      setMetrics(response ?? []);
+      console.log(metrics);
+    } catch (error) {
+      console.error('Error fetching metrics:', error)
     }
   };
 
@@ -112,6 +122,10 @@ export default function App() {
           onStockChange={fetchProducts} 
           editProduct={(data) => openModal('update', data)}
           deleteProduct={(data) => openModal('delete', data)}
+        />
+
+        <MetricsTable
+          metrics={metrics}
         />
 
         {currentModal && (
