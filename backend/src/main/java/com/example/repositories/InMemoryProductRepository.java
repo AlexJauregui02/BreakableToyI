@@ -51,7 +51,7 @@ public class InMemoryProductRepository implements ProductRepository {
     @Override
     public CustomPage<Product> getProducts(String nameFilter, int page, int size) {
         List<Product> filtereProducts = db.values().stream()
-            .filter(p -> nameFilter == null || p.getName().contains(nameFilter))
+            .filter(p -> nameFilter == null || p.getName().toLowerCase().contains(nameFilter.toLowerCase()))
             .collect(Collectors.toList());
 
         int totalItems = filtereProducts.size();
@@ -61,6 +61,19 @@ public class InMemoryProductRepository implements ProductRepository {
         List<Product> paginateProducts = filtereProducts.subList(start, end);
 
         return new CustomPage<>(paginateProducts, page, size, totalItems);
+    }
+
+    @Override
+    public List<String> findAllCategories() {
+        return db.values().stream()
+            .map(Product::getCategory)
+            .distinct()
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countAllProducts() {
+        return db.size();
     }
 
     @Override

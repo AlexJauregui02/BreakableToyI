@@ -4,6 +4,7 @@ import com.example.models.Product;
 import com.example.models.CustomPage;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +39,15 @@ public class ProductController {
         CustomPage<Product> products = productService.getProducts(name, page, size); 
 
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/api/products/metrics")
+	public ResponseEntity<List<Map<String, Object>>> getMetrics() {
+        System.out.println("Fetching metrics");
+
+        List<Map<String, Object>> metrics = productService.getInventoryMetrics(); 
+
+        return ResponseEntity.ok(metrics);
     }
 
     // This method handles POST requests to retrieve a new product

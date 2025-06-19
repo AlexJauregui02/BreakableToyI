@@ -11,5 +11,7 @@ public interface ProductRepository {
     List<Product> findAll();
     Optional<Product> findById(Long id);
     CustomPage<Product> getProducts(String nameFilter, int page, int size);
+    List<String> findAllCategories();
+    long countAllProducts();
     void deleteById(Long id);
 }
