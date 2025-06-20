@@ -69,3 +69,8 @@ export async function deleteProduct(productId: number): Promise<Product | undefi
 export async function getMetrics(): Promise<[] | undefined> {
     return fetchApi<[]>("/products/metrics");
 }
+
+export async function getCategories(): Promise<[] | undefined> {
+    return fetchApi<[]>("/products/categories");
+}
+

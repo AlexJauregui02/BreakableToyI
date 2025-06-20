@@ -1,6 +1,6 @@
 import './App.css'
 import { useEffect, useState } from 'react';
-import { getProducts, getMetrics } from './api/services/productService';
+import { getProducts, getMetrics, getCategories } from './api/services/productService';
 import type { Product, getProductProps } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
@@ -16,6 +16,7 @@ export default function App() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [metrics, setMetrics] = useState([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
 
@@ -58,6 +59,13 @@ export default function App() {
       setMetrics(response ?? []);
     } catch (error) {
       console.error('Error fetching metrics:', error)
+    }
+
+    try {
+      const response = await getCategories();
+      setCategories(response ?? []);
+    } catch (error) {
+      console.error('Error fetching categories:', error)
     }
   };
 
@@ -130,6 +138,7 @@ export default function App() {
 
         <FilterProducts
           filterSearch={(name, categories, size) => {handleFilters(name, categories, size)}}
+          categories={categories}
         />
 
         <Button 

@@ -5,24 +5,28 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 
 export default function FilterProducts({
-    filterSearch
+    filterSearch,
+    categories
 }: {
-    filterSearch: (name: String, category: String[], availability: String) => void
+    filterSearch: (name: string, category: string[], availability: string) => void,
+    categories: string[]
 }) {
 
-    const [name, setName] = useState<String>('');
-    const [category, setCategory] = useState<String[]>([]);
-    const [availability, setAvailability] = useState<String>('');
+    const [name, setName] = useState<string>('');
+    const [category, setCategory] = useState<string[]>([]);
+    const [availability, setAvailability] = useState<string>('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         if (id === "name") setName(value);
-        else if (id === "category") setCategory(value ? [value] : []);
+        else if (id === "category") {
+            const options = (e.target as HTMLSelectElement).selectedOptions;
+            setCategory(Array.from(options, option => option.value));
+        }
         else if (id === "availability") setAvailability(value);
     }
 
     const handleFilterSearch = () => {
-        console.log(`${name} | ${category} | ${availability}`);
         filterSearch(name, category, availability);
     }
 
@@ -45,10 +49,15 @@ export default function FilterProducts({
                         Category:
                         <select
                             id="category"
-                            className="appearance-none mx-1 h-7 px-2 rounded-sm border-1 text-sm "
+                            multiple
+                            value={category}
+                            className="mx-1 min-h-[80px] w-full rounded-sm border border-input px-2 text-sm"
                             onChange={handleChange}
                         >
                             <option value=''>Select a category</option>
+                            {categories.map((categoryOption) => (
+                                <option key={categoryOption} value={categoryOption}>{categoryOption}</option>
+                            ))}
                         </select>
                     </label>
                     <label className='text-sm font-medium leading-none'>
