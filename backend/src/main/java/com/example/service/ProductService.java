@@ -22,8 +22,10 @@ public class ProductService {
         this.repository = inMemoryRepository;
     }
 
-    public CustomPage<Product> getProducts(String name, int page, int size) {
-        return repository.getProducts(name, page, size);
+    public CustomPage<Product> getProducts(String name, List<String> categories, Boolean availability,
+                                           String sortBy1, String sortDirection1, String sortBy2, String sortDirection2,
+                                           int page, int size) {
+        return repository.getProducts(name, categories, availability, sortBy1, sortDirection1, sortBy2, sortDirection2, page, size);
     }
 
     public Product createProduct(Product product) {

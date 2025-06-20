@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 @Repository
 public class InMemoryProductRepository implements ProductRepository {
@@ -49,18 +51,58 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public CustomPage<Product> getProducts(String nameFilter, int page, int size) {
-        List<Product> filtereProducts = db.values().stream()
+    public CustomPage<Product> getProducts(String nameFilter, List<String> categoryFilters, Boolean availabilityFilter,
+                                           String sortBy1, String sortDirection1, String sortBy2, String sortDirection2, 
+                                           int page, int size) {
+        List<Product> filteredProducts = db.values().stream()
             .filter(p -> nameFilter == null || p.getName().toLowerCase().contains(nameFilter.toLowerCase()))
+            .filter(p -> categoryFilters == null || categoryFilters.isEmpty() || categoryFilters.contains(p.getCategory()))
+            .filter(p -> availabilityFilter == null || (availabilityFilter && p.getInStock() > 0) || (!availabilityFilter && p.getInStock() == 0))
             .collect(Collectors.toList());
 
-        int totalItems = filtereProducts.size();
+        Comparator<Product> comparator = getProductComparator(sortBy1, sortDirection1);
+        if(sortBy2 != null && !sortBy2.isEmpty()) {
+            comparator = comparator.thenComparing(getProductComparator(sortBy2, sortDirection2));
+        }
+
+        filteredProducts.sort(comparator);
+
+        int totalItems = filteredProducts.size();
         int start = page * size;
         int end = Math.min(start + size, totalItems);
 
-        List<Product> paginateProducts = filtereProducts.subList(start, end);
+        List<Product> paginateProducts = filteredProducts.subList(start, end);
 
         return new CustomPage<>(paginateProducts, page, size, totalItems);
+    }
+
+    private Comparator<Product> getProductComparator(String sortBy, String sortDirection) {
+        Comparator<Product> comparator;
+        if (sortBy == null) {
+            comparator = Comparator.comparing(Product::getId);
+        } else {
+            switch(sortBy) {
+                case "name":
+                    comparator = Comparator.comparing(Product::getName);
+                    break;
+                case "category":
+                    comparator = Comparator.comparing(Product::getCategory);
+                    break;
+                case "price":
+                    comparator = Comparator.comparing(Product::getUnitPrice);
+                    break;
+                case "stock":
+                    comparator = Comparator.comparing(Product::getInStock);
+                    break;
+                case "expirationDate":
+                    comparator = Comparator.comparing(p -> p.getExpirationDate() == null ? LocalDate.MAX : p.getExpirationDate());
+                    break;
+                default:
+                    comparator = Comparator.comparing(Product::getId);
+                    break;
+            }
+        }
+        return sortDirection.equalsIgnoreCase("desc") ? comparator.reversed() : comparator;
     }
 
     @Override

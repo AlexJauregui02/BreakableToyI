@@ -5,6 +5,7 @@ import com.example.models.CustomPage;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,12 +32,36 @@ public class ProductController {
     @GetMapping("/api/products")
 	public ResponseEntity<CustomPage<Product>> getProducts(
         @RequestParam(required = false) String name,
+        @RequestParam(required = false) List<String> category,
+        @RequestParam(required = false) String availability,
+        @RequestParam(required = false) String sortBy1,
+        @RequestParam(required = false) String sortDirection1,
+        @RequestParam(required = false) String sortBy2,
+        @RequestParam(required = false) String sortDirection2,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
     ) {
         System.out.println("Fetching products");
 
-        CustomPage<Product> products = productService.getProducts(name, page, size); 
+        Boolean availabilityFilter = null;
+        if (availability != null && !availability.isEmpty()) {
+            if (availability.equalsIgnoreCase("in_stock")) {
+                availabilityFilter = true;
+            } else if (availability.equalsIgnoreCase("out_of_stock")) {
+                availabilityFilter = false;
+            }
+        }
+
+        CustomPage<Product> products = productService.getProducts(
+            name,
+            category,
+            availabilityFilter,
+            sortBy1,
+            Optional.ofNullable(sortDirection1).orElse("asc"),
+            sortBy2,
+            Optional.ofNullable(sortDirection2).orElse("asc"),
+            page, 
+            size); 
 
         return ResponseEntity.ok(products);
     }
