@@ -1,8 +1,29 @@
 import { fetchApi } from "../client";
-import type { Product, CustomPage } from "../../types/product";
+import type { Product, CustomPage, getProductProps } from "../../types/product";
 
-export async function getProducts(name: String, page: String, size: String): Promise<CustomPage<Product> | undefined> {
-    return fetchApi<CustomPage<Product>>(`/products?name=${name}&page=${page}&size=${size}`);
+
+export async function getProducts(data: getProductProps): Promise<CustomPage<Product> | undefined> {
+    let url = `/products?page=${data.page}&size=${data.size}`;
+
+    if(data.name) {
+        url += `&name=${data.name}`;
+    }
+    if(data.category.length > 0) {
+        data.category.forEach(category => {
+            url += `&category=${category}`;
+        })
+    }
+    if(data.availability) {
+        url += `&availability=${data.availability}`;
+    }
+    if(data.sortBy1) {
+        url += `&sortBy1=${data.sortBy1}&sortDirection1=${data.sortDirection1}`;
+        if(data.sortBy2) {
+            url += `&sortBy2=${data.sortBy2}&sortDirection2=${data.sortDirection2}`;
+        }
+    }
+
+    return fetchApi<CustomPage<Product>>(url);
 }
 
 export async function createProduct(product: Product): Promise<Product | undefined> {

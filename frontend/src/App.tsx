@@ -1,7 +1,7 @@
 import './App.css'
 import { useEffect, useState } from 'react';
 import { getProducts, getMetrics } from './api/services/productService';
-import type { Product } from './types/product';
+import type { Product, getProductProps } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
 import CreateEditProduct from './components/content/createEditProduct';
@@ -14,13 +14,22 @@ type ModalType = 'create' | 'update' | 'delete' | null;
 
 export default function App() {
 
-  const [nameFilter, setNameFilter] = useState<String>('');
-  const [categoryFilter, setCategoryFilter] = useState<String>('');
-  const [availabilityFilter, setAvailabilityFilter] = useState<String>('');
   const [products, setProducts] = useState<Product[]>([]);
   const [metrics, setMetrics] = useState([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
+
+  const [getDataProps, setGetDataProps] = useState<getProductProps>({
+    name: "",
+    category: [],
+    availability: "",
+    sortBy1: "",
+    sortDirection1: "",
+    sortBy2: "",
+    sortDirection2: "",
+    page: "",
+    size: ""
+});
 
   const openModal = (type: ModalType, data?: Product) => {
     if ((type === 'update' || type === 'delete') && data) {
@@ -35,12 +44,10 @@ export default function App() {
   };
 
   const fetchProducts = async (
-    name = nameFilter,
-    category = categoryFilter,
-    availability = availabilityFilter
+    data = getDataProps
   ) => {
     try {
-      const response = await getProducts(name,category,availability);
+      const response = await getProducts(data);
       setProducts(response?.content ?? []);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -49,18 +56,24 @@ export default function App() {
     try {
       const response = await getMetrics();
       setMetrics(response ?? []);
-      console.log(metrics);
     } catch (error) {
       console.error('Error fetching metrics:', error)
     }
   };
 
-  const handleFilters = async (name: String, category: String, availability: String) => {
-    setNameFilter(name);
-    setCategoryFilter(category);
-    setAvailabilityFilter(availability);
-    await fetchProducts(name, category, availability);
+  const handleFilters = async (name: String, categories: String[], availability: String) => {
+    const newProps: getProductProps = {
+      ...getDataProps,
+      name,
+      category: categories,
+      availability,
+    };
+    setGetDataProps(newProps);
   };
+
+  // const handleSorts = async () => {
+
+  // }
 
   const modalContents = {
     create: {
@@ -99,14 +112,24 @@ export default function App() {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [
+    getDataProps.name,
+    getDataProps.category,
+    getDataProps.availability,
+    getDataProps.sortBy1,
+    getDataProps.sortDirection1,
+    getDataProps.sortBy2,
+    getDataProps.sortDirection2,
+    getDataProps.page,
+    getDataProps.size,
+  ]);
 
   return (
     <>
       <div className='flex flex-col items-center justify-center'>
 
         <FilterProducts
-          filterSearch={(name, category, size) => {handleFilters(name, category, size)}}
+          filterSearch={(name, categories, size) => {handleFilters(name, categories, size)}}
         />
 
         <Button 

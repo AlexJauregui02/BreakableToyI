@@ -7,17 +7,17 @@ import { Button } from "../ui/button";
 export default function FilterProducts({
     filterSearch
 }: {
-    filterSearch: (name: String, category: String, availability: String) => void
+    filterSearch: (name: String, category: String[], availability: String) => void
 }) {
 
     const [name, setName] = useState<String>('');
-    const [category, setCategory] = useState<String>('');
+    const [category, setCategory] = useState<String[]>([]);
     const [availability, setAvailability] = useState<String>('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         if (id === "name") setName(value);
-        else if (id === "category") setCategory(value);
+        else if (id === "category") setCategory(value ? [value] : []);
         else if (id === "availability") setAvailability(value);
     }
 
@@ -59,6 +59,8 @@ export default function FilterProducts({
                             onChange={handleChange}
                         >
                             <option value=''>Select an availability</option>
+                            <option value='in_stock'>In Stock</option>
+                            <option value='out_of_stock'>Out of Stock</option>
                         </select>
                     </label>
                 </div>

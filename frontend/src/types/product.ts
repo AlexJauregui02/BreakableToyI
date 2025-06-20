@@ -7,6 +7,18 @@ export interface Product {
   inStock: number;
 }
 
+export interface getProductProps {
+    name: String,
+    category: String[],
+    availability: String,
+    sortBy1: String,
+    sortDirection1: String,
+    sortBy2: String,
+    sortDirection2: String,
+    page: String,
+    size: String
+}
+
 export interface CustomPage<T> {
   content: T[],
   pageNumber: number,
