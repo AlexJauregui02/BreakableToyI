@@ -76,6 +76,16 @@ public class ProductController {
         return ResponseEntity.ok(metrics);
     }
 
+    // This method handles GET request to retrieve all the categories
+    @GetMapping("/api/products/categories")
+	public ResponseEntity<List<String>> getCategories() {
+        System.out.println("Fetching categories");
+
+        List<String> categories = productService.getAllCategories(); 
+
+        return ResponseEntity.ok(categories);
+    }
+
     // This method handles POST requests to retrieve a new product
     @PostMapping("/api/products")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
