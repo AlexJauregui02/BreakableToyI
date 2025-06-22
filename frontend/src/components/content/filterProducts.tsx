@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 
+import Select from 'react-select';
+
 export default function FilterProducts({
     filterSearch,
     categories
@@ -16,19 +18,31 @@ export default function FilterProducts({
     const [category, setCategory] = useState<string[]>([]);
     const [availability, setAvailability] = useState<string>('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { id, value } = e.target;
-        if (id === "name") setName(value);
-        else if (id === "category") {
-            const options = (e.target as HTMLSelectElement).selectedOptions;
-            setCategory(Array.from(options, option => option.value));
-        }
-        else if (id === "availability") setAvailability(value);
+    // This is because the select react componente only accepts value and label as the 
+    // order of the input
+    const categoryOptions = categories.map(val => ({ value: val, label: val }));
+    const optionsAvailability = [
+        { value: '', label: 'Select...' },
+        { value: 'in_stock', label: 'In Stock' },
+        { value: 'out_of_stock', label: 'Out Of Stock' },
+    ];
+
+    const handleChangeName = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { value } = e.target;
+        setName(value);
+    };
+
+    const handleCategoryChange = (selected: any) => {
+        setCategory(selected ? selected.map((opt: any) => opt.value) : []);
+    };
+
+    const handleAvailabilityChange = (selected: any) => {
+        setAvailability(selected.value);
     }
 
     const handleFilterSearch = () => {
         filterSearch(name, category, availability);
-    }
+    };
 
     return (
         <Card className="m-10 w-7/10 rounded-sm p-10">
@@ -42,27 +56,25 @@ export default function FilterProducts({
                             id="name"
                             type="text"
                             className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                            onChange={handleChange}
+                            onChange={handleChangeName}
                         />
                     </label>
                     <label className='text-sm font-medium leading-none'>
                         Category:
-                        <select
+                        <Select
+                            isMulti
                             id="category"
-                            multiple
-                            value={category}
-                            className="mx-1 min-h-[80px] w-full rounded-sm border border-input px-2 text-sm"
-                            onChange={handleChange}
-                        >
-                            <option value=''>Select a category</option>
-                            {categories.map((categoryOption) => (
-                                <option key={categoryOption} value={categoryOption}>{categoryOption}</option>
-                            ))}
-                        </select>
+                            options={categoryOptions}
+                            value={categoryOptions.filter(opt => category.includes(opt.value))}
+                            onChange={handleCategoryChange}
+                            unstyled
+                            className="mx-1 px-2 rounded-sm border-1 text-sm shadow-sm"
+                            classNamePrefix="select"
+                        />
                     </label>
                     <label className='text-sm font-medium leading-none'>
                         Availability:
-                        <select
+                        {/* <select
                             id="availability"
                             className="appearance-none mx-1 h-7 px-2 rounded-sm border-1 text-sm "
                             onChange={handleChange}
@@ -70,7 +82,14 @@ export default function FilterProducts({
                             <option value=''>Select an availability</option>
                             <option value='in_stock'>In Stock</option>
                             <option value='out_of_stock'>Out of Stock</option>
-                        </select>
+                        </select> */}
+                        <Select
+                            options={optionsAvailability}
+                            id="availability"
+                            className="mx-1 px-2 rounded-sm border-1 text-sm shadow-sm"
+                            unstyled
+                            onChange={handleAvailabilityChange}
+                        />
                     </label>
                 </div>
                 <Button

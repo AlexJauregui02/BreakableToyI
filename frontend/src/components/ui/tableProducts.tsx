@@ -48,7 +48,7 @@ export function TableProducts({ products, onStockChange, editProduct, deleteProd
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 text-sm rounded-md">
                     {products.map((product) => (
-                        <tr key={product.name}>
+                        <tr key={product.id}>
                             <td className="px-6 py-2 whitespace-nowrap">
                                 <input 
                                     type="checkbox" 
