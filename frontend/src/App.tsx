@@ -5,7 +5,7 @@ import type { Product, getProductProps } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
 import CreateEditProduct from './components/content/createEditProduct';
-import { TableProducts } from './components/ui/tableProducts';
+import { TableProducts } from './components/content/tableProducts';
 import { MetricsTable } from './components/content/metricsTable';
 import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
 import FilterProducts from './components/content/filterProducts';
@@ -33,10 +33,15 @@ export default function App() {
 });
 
   const openModal = (type: ModalType, data?: Product) => {
+    if (categories.length === 0) {
+      fetchProducts().then(() => setCurrentModal(type));
+    } else {
+      setCurrentModal(type);
+    }
+
     if ((type === 'update' || type === 'delete') && data) {
       setTempProduct(data);
     }
-    setCurrentModal(type);
   };
 
   const closeModal = () => {
@@ -79,10 +84,6 @@ export default function App() {
     setGetDataProps(newProps);
   };
 
-  // const handleSorts = async () => {
-
-  // }
-
   const modalContents = {
     create: {
       title: 'Create Product',
@@ -91,7 +92,8 @@ export default function App() {
                   onSuccess={() =>{
                     fetchProducts();
                     closeModal();
-                  }}/>,
+                  }}
+                  categories={categories}/>,
       size: 'md'
     },
     update: {
@@ -102,7 +104,8 @@ export default function App() {
                     fetchProducts();
                     closeModal();
                   }} 
-                  data={tempProduct}/>,
+                  data={tempProduct}
+                  categories={categories}/>,
       size: 'md'
     },
     delete: {
@@ -142,7 +145,7 @@ export default function App() {
         />
 
         <Button 
-          className='mx-15 mt-10' 
+          className='' 
           variant='outline' 
           onClick={() => {openModal('create')}}
         >

@@ -8,7 +8,7 @@ import Select from 'react-select';
 
 export default function FilterProducts({
     filterSearch,
-    categories
+    categories = []
 }: {
     filterSearch: (name: string, category: string[], availability: string) => void,
     categories: string[]
@@ -21,7 +21,7 @@ export default function FilterProducts({
     // This is because the select react componente only accepts value and label as the 
     // order of the input
     const categoryOptions = categories.map(val => ({ value: val, label: val }));
-    const optionsAvailability = [
+    const availabilityOptions = [
         { value: '', label: 'Select...' },
         { value: 'in_stock', label: 'In Stock' },
         { value: 'out_of_stock', label: 'Out Of Stock' },
@@ -74,17 +74,8 @@ export default function FilterProducts({
                     </label>
                     <label className='text-sm font-medium leading-none'>
                         Availability:
-                        {/* <select
-                            id="availability"
-                            className="appearance-none mx-1 h-7 px-2 rounded-sm border-1 text-sm "
-                            onChange={handleChange}
-                        >
-                            <option value=''>Select an availability</option>
-                            <option value='in_stock'>In Stock</option>
-                            <option value='out_of_stock'>Out of Stock</option>
-                        </select> */}
                         <Select
-                            options={optionsAvailability}
+                            options={availabilityOptions}
                             id="availability"
                             className="mx-1 px-2 rounded-sm border-1 text-sm shadow-sm"
                             unstyled

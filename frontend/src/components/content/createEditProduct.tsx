@@ -2,15 +2,20 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { createProduct, updateProduct } from '../../api/services/productService';
+import CreatableSelect from 'react-select/creatable';
 import type { Product } from '../../types/product';
 
 export default function CreateEditProduct({
     onSuccess,
-    data
+    data,
+    categories = []
 }: {
     onSuccess: () => void,
-    data?: Product | null
+    data?: Product | null,
+    categories: string[]
 }) {
+    const categoryOptions = categories.map(val => ({ value: val, label: val }));
+
     const [formData, setFormData] = useState({
         name: data?.name || '',
         category: data?.category || '',
@@ -23,6 +28,13 @@ export default function CreateEditProduct({
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleCategoryChange = (selected: any) => {
+        setFormData({
+            ...formData,
+            category: selected ? selected.value : '',
         });
     };
 
@@ -79,13 +91,18 @@ export default function CreateEditProduct({
 
                 <label className='text-sm font-medium leading-none'>
                     Category:
-                    <input
-                        type="text"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                        required
+                    <CreatableSelect
+                        isClearable
+                        options={categoryOptions}
+                        value={
+                            formData.category
+                                ? { value: formData.category, label: formData.category }
+                                : null
+                        }
+                        onChange={handleCategoryChange}
+                        className="mx-1 text-sm shadow-sm"
+                        classNamePrefix="select"
+                        placeholder="Select or create a category"
                     />
                 </label>
                 <label className='text-sm font-medium leading-none'>
