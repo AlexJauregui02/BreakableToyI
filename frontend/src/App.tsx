@@ -19,6 +19,7 @@ export default function App() {
   const [categories, setCategories] = useState<string[]>([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
 
   const [getDataProps, setGetDataProps] = useState<getProductProps>({
     name: "",
@@ -28,8 +29,8 @@ export default function App() {
     sortDirection1: "",
     sortBy2: "",
     sortDirection2: "",
-    page: "",
-    size: ""
+    page: 0,
+    size: 3
 });
 
   const openModal = (type: ModalType, data?: Product) => {
@@ -55,6 +56,7 @@ export default function App() {
     try {
       const response = await getProducts(data);
       setProducts(response?.content ?? []);
+      setTotalItems(response?.totalElements ?? 0);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -74,12 +76,13 @@ export default function App() {
     }
   };
 
-  const handleFilters = async (name: String, categories: String[], availability: String) => {
+  const handleFilters = async (name: string, categories: string[], availability: string) => {
     const newProps: getProductProps = {
       ...getDataProps,
       name,
       category: categories,
       availability,
+      page: 0,
     };
     setGetDataProps(newProps);
   };
@@ -144,7 +147,7 @@ export default function App() {
           categories={categories}
         />
 
-        <Button 
+        <Button
           className='' 
           variant='outline' 
           onClick={() => {openModal('create')}}
@@ -157,6 +160,15 @@ export default function App() {
           onStockChange={fetchProducts} 
           editProduct={(data) => openModal('update', data)}
           deleteProduct={(data) => openModal('delete', data)}
+          onTableChange={(params) => {
+            setGetDataProps(prev => ({
+              ...prev,
+              ...params,
+              page: params.pageIndex ?? 0,
+            }));
+          }}
+          pageCount={Math.ceil(totalItems / getDataProps.size)}
+          currentPage={getDataProps.page}
         />
 
         <MetricsTable

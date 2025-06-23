@@ -15,8 +15,8 @@ export interface getProductProps {
     sortDirection1: String,
     sortBy2: String,
     sortDirection2: String,
-    page: String,
-    size: String
+    page: number,
+    size: number
 }
 
 export interface CustomPage<T> {
