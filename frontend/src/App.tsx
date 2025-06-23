@@ -1,68 +1,179 @@
 import './App.css'
 import { useEffect, useState } from 'react';
-import { Card } from './components/ui/card'
-import { getProducts } from './api/services/productService';
-import type { Product } from './types/product';
+import { getProducts, getMetrics, getCategories } from './api/services/productService';
+import type { Product, getProductProps } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
-import AddNewProduct from './components/content/addNewProduct';
-import { TableProducts } from './components/ui/tableProducts';
+import CreateEditProduct from './components/content/createEditProduct';
+import { TableProducts } from './components/content/tableProducts';
+import { MetricsTable } from './components/content/metricsTable';
+import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
+import FilterProducts from './components/content/filterProducts';
 
-type ModalType = 'create' | 'update' | null;
+type ModalType = 'create' | 'update' | 'delete' | null;
 
 export default function App() {
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [metrics, setMetrics] = useState([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
+  const [tempProduct, setTempProduct] = useState<Product | null>(null);
+  const [totalItems, setTotalItems] = useState(0);
 
-  const openModal = (type: ModalType) => setCurrentModal(type);
-  const closeModal = () => setCurrentModal(null);
+  const [getDataProps, setGetDataProps] = useState<getProductProps>({
+    name: "",
+    category: [],
+    availability: "",
+    sortBy1: "",
+    sortDirection1: "",
+    sortBy2: "",
+    sortDirection2: "",
+    page: 0,
+    size: 3
+});
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const openModal = (type: ModalType, data?: Product) => {
+    if (categories.length === 0) {
+      fetchProducts().then(() => setCurrentModal(type));
+    } else {
+      setCurrentModal(type);
+    }
+
+    if ((type === 'update' || type === 'delete') && data) {
+      setTempProduct(data);
+    }
+  };
+
+  const closeModal = () => {
+    setCurrentModal(null);
+    setTempProduct(null);
+  };
+
+  const fetchProducts = async (
+    data = getDataProps
+  ) => {
+    try {
+      const response = await getProducts(data);
+      setProducts(response?.content ?? []);
+      setTotalItems(response?.totalElements ?? 0);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+
+    try {
+      const response = await getMetrics();
+      setMetrics(response ?? []);
+    } catch (error) {
+      console.error('Error fetching metrics:', error)
+    }
+
+    try {
+      const response = await getCategories();
+      setCategories(response ?? []);
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  };
+
+  const handleFilters = async (name: string, categories: string[], availability: string) => {
+    const newProps: getProductProps = {
+      ...getDataProps,
+      name,
+      category: categories,
+      availability,
+      page: 0,
+    };
+    setGetDataProps(newProps);
+  };
 
   const modalContents = {
     create: {
       title: 'Create Product',
       description: 'Create a new product.',
-      content: <AddNewProduct 
+      content: <CreateEditProduct 
                   onSuccess={() =>{
                     fetchProducts();
                     closeModal();
-                  }}/>,
+                  }}
+                  categories={categories}/>,
       size: 'md'
     },
     update: {
       title: 'Update Product',
       description: 'Update an existing product.',
-      content: <div>Update Product Form</div>,
+      content: <CreateEditProduct 
+                  onSuccess={() =>{
+                    fetchProducts();
+                    closeModal();
+                  }} 
+                  data={tempProduct}
+                  categories={categories}/>,
+      size: 'md'
+    },
+    delete: {
+      title: 'Delete Product',
+      description: '',
+      content: <ConfirmDeleteProduct
+                  onSuccess={() =>{
+                    fetchProducts();
+                    closeModal();
+                  }} 
+                  data={tempProduct}/>,
       size: 'md'
     }
   };
 
-  const fetchProducts = async () => {
-      try {
-        const response = await getProducts();
-        console.log('Fetched products:', response);
-        setProducts(response ?? []);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
+  useEffect(() => {
+    fetchProducts();
+  }, [
+    getDataProps.name,
+    getDataProps.category,
+    getDataProps.availability,
+    getDataProps.sortBy1,
+    getDataProps.sortDirection1,
+    getDataProps.sortBy2,
+    getDataProps.sortDirection2,
+    getDataProps.page,
+    getDataProps.size,
+  ]);
 
   return (
     <>
       <div className='flex flex-col items-center justify-center'>
-        <Card className='w-1/2 mt-10 rounded-sm'>
-          Hola
-        </Card>
 
-        <Button className='mx-15 mt-10' variant='outline' onClick={() => {openModal('create')}}>
+        <FilterProducts
+          filterSearch={(name, categories, size) => {handleFilters(name, categories, size)}}
+          categories={categories}
+        />
+
+        <Button
+          className='' 
+          variant='outline' 
+          onClick={() => {openModal('create')}}
+        >
           New Product
         </Button>
 
-        <TableProducts products={products} onStockChange={fetchProducts} />
+        <TableProducts 
+          products={products} 
+          onStockChange={fetchProducts} 
+          editProduct={(data) => openModal('update', data)}
+          deleteProduct={(data) => openModal('delete', data)}
+          onTableChange={(params) => {
+            setGetDataProps(prev => ({
+              ...prev,
+              ...params,
+              page: params.pageIndex ?? 0,
+            }));
+          }}
+          pageCount={Math.ceil(totalItems / getDataProps.size)}
+          currentPage={getDataProps.page}
+        />
+
+        <MetricsTable
+          metrics={metrics}
+        />
 
         {currentModal && (
           <Modal

@@ -1,6 +1,5 @@
 package com.example.models;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -9,7 +8,7 @@ public class Product {
     private Long id;
     private String name;
     private String category;
-    private BigDecimal unitPrice;
+    private double unitPrice;
     private LocalDate expirationDate;
     private Integer inStock;
     private LocalDateTime createdAt;
@@ -21,7 +20,7 @@ public class Product {
 
     // Constructor with parameters
     // This constructor initializes all fields of the producto class
-    public Product(String name, String category, BigDecimal unitPrice, LocalDate expirationDate, Integer inStock, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Product(String name, String category, double unitPrice, LocalDate expirationDate, Integer inStock, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super();
         this.name = name;
         this.category = category;
@@ -50,10 +49,10 @@ public class Product {
     public void setCategory(String category) {
         this.category = category;
     }
-    public BigDecimal getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
-    public void setUnitPrice(BigDecimal unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
     public LocalDate getExpirationDate() {

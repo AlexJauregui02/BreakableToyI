@@ -2,10 +2,15 @@ package com.example.service;
 
 import com.example.models.Product;
 import com.example.repositories.InMemoryProductRepository;
+import com.example.models.CustomPage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,11 +22,12 @@ public class ProductService {
         this.repository = inMemoryRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return repository.findAll();
+    public CustomPage<Product> getProducts(String name, List<String> categories, Boolean availability,
+                                           String sortBy1, String sortDirection1, String sortBy2, String sortDirection2,
+                                           int page, int size) {
+        return repository.getProducts(name, categories, availability, sortBy1, sortDirection1, sortBy2, sortDirection2, page, size);
     }
 
-    // Add all logic related to products here
     public Product createProduct(Product product) {
         product.setExpirationDate(LocalDate.now());
         product.setCreatedAt(LocalDateTime.now());
@@ -50,5 +56,68 @@ public class ProductService {
         repository.save(product);
     }
 
+    public void productDelete(Long id) {
+        repository.deleteById(id);
+    }
 
+    public List<String> getAllCategories() {
+        return repository.findAllCategories();
+    }
+
+    public List<Map<String, Object>> getInventoryMetrics() {
+        List<Map<String, Object>> metricsTable = new ArrayList<>();
+        List<Product> allProducts = repository.findAll();
+        List<String> allCategories = repository.findAllCategories();
+
+        for (String category : allCategories) {
+            List<Product> categoryProducts = allProducts.stream()
+                .filter(p -> p.getCategory().equals(category))
+                .collect(Collectors.toList());
+            int categoryInStock = categoryProducts.stream()
+                .mapToInt(Product::getInStock)
+                .sum();
+            double categoryValue = categoryProducts.stream()
+                .filter(p -> p.getInStock() > 0)
+                .mapToDouble(p -> p.getUnitPrice() * p.getInStock())
+                .sum();
+
+            metricsTable.add(createMetricsRow(
+                category,
+                categoryInStock,
+                categoryValue,
+                calculateAvgPrice(categoryValue, categoryInStock)
+            ));
+        }
+
+        int allProductsInStock = allProducts.stream()
+                .mapToInt(Product::getInStock)
+                .sum();
+        double allProductsCategoryValue = allProducts.stream()
+                .filter(p -> p.getInStock() > 0)
+                .mapToDouble(p -> p.getUnitPrice() * p.getInStock())
+                .sum();
+        
+        metricsTable.add(createMetricsRow(
+            "Overall", 
+            allProductsInStock,
+            allProductsCategoryValue, 
+            calculateAvgPrice(allProductsCategoryValue, allProductsInStock)
+        ));
+
+        return metricsTable;
+    }
+
+    private double calculateAvgPrice(double totalPrice, int totalStock) {
+       return  totalStock != 0 ? totalPrice / totalStock : 0.0;
+    }
+
+    private Map<String, Object> createMetricsRow(String category, int count, Double totalValue, Double avgPrice) {
+        Map<String, Object> row = new LinkedHashMap<>();
+        row.put("category", category);
+        row.put("productCount", count);
+        row.put("totalValue", totalValue);
+        row.put("averagePrice", avgPrice);
+
+        return row;
+    }
 }

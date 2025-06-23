@@ -1,15 +1,27 @@
 
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
-import { createProduct } from '../../api/services/productService';
+import { createProduct, updateProduct } from '../../api/services/productService';
+import CreatableSelect from 'react-select/creatable';
+import type { Product } from '../../types/product';
 
-export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
+export default function CreateEditProduct({
+    onSuccess,
+    data,
+    categories = []
+}: {
+    onSuccess: () => void,
+    data?: Product | null,
+    categories: string[]
+}) {
+    const categoryOptions = categories.map(val => ({ value: val, label: val }));
+
     const [formData, setFormData] = useState({
-        name: '',
-        category: '',
-        expirationDate: '',
-        unitPrice: '',
-        inStock: '',
+        name: data?.name || '',
+        category: data?.category || '',
+        expirationDate: data?.expirationDate,
+        unitPrice: data?.unitPrice?.toString() || '',
+        inStock: data?.inStock?.toString() || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -19,20 +31,45 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
         });
     };
 
+    const handleCategoryChange = (selected: any) => {
+        setFormData({
+            ...formData,
+            category: selected ? selected.value : '',
+        });
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        try {
-            const productData = {
+        let productData;
+
+        if (data?.id && data.id > 0) {
+            productData = {
                 ...formData,
-                id: 0,
-                expirationDate: new Date(formData.expirationDate),
+                id: data.id,
+                expirationDate: formData.expirationDate ? new Date(formData.expirationDate) : new Date(),
                 unitPrice: Number(formData.unitPrice),
                 inStock: Number(formData.inStock),
             };
-            await createProduct(productData);
-        } catch (error) {
-            console.error('Error submitting form:', error);
+            try {
+                await updateProduct(productData);
+            }
+            catch (error) {
+                console.error('Error updating product:', error);
+            }
+        } else {
+            try {
+                productData = {
+                    ...formData,
+                    id: 0,
+                    expirationDate: formData.expirationDate ? new Date(formData.expirationDate) : new Date(),
+                    unitPrice: Number(formData.unitPrice),
+                    inStock: Number(formData.inStock),
+                };
+                await createProduct(productData);
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
         }
         onSuccess();
     };
@@ -54,13 +91,18 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
 
                 <label className='text-sm font-medium leading-none'>
                     Category:
-                    <input
-                        type="text"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                        required
+                    <CreatableSelect
+                        isClearable
+                        options={categoryOptions}
+                        value={
+                            formData.category
+                                ? { value: formData.category, label: formData.category }
+                                : null
+                        }
+                        onChange={handleCategoryChange}
+                        className="mx-1 text-sm shadow-sm"
+                        classNamePrefix="select"
+                        placeholder="Select or create a category"
                     />
                 </label>
                 <label className='text-sm font-medium leading-none'>
@@ -94,7 +136,11 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
                     <input
                         type="date"
                         name="expirationDate"
-                        value={formData.expirationDate}
+                        value={
+                            formData.expirationDate instanceof Date
+                                ? formData.expirationDate.toISOString().slice(0, 10)
+                                : formData.expirationDate || ''
+                        }
                         onChange={handleChange}
                         className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
                     />
@@ -105,7 +151,7 @@ export default function AddNewProduct({onSuccess}: {onSuccess: () => void}) {
                 className="w-full"
                 variant="default"
             >
-                Create Product
+                Done
             </Button>
         </form>
     );
