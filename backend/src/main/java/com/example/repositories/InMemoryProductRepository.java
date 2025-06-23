@@ -88,10 +88,10 @@ public class InMemoryProductRepository implements ProductRepository {
                 case "category":
                     comparator = Comparator.comparing(Product::getCategory);
                     break;
-                case "unitPrice":
+                case "price":
                     comparator = Comparator.comparing(Product::getUnitPrice);
                     break;
-                case "inStock":
+                case "stock":
                     comparator = Comparator.comparing(Product::getInStock);
                     break;
                 case "expirationDate":
