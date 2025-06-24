@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 public class ProductController {
 
@@ -28,7 +30,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // This method handles GET requests to retrieve all products
+    @Operation(summary = "Method that retrieves products with parameters for filters and sorting")
     @GetMapping("/api/products")
 	public ResponseEntity<CustomPage<Product>> getProducts(
         @RequestParam(required = false) String name,
@@ -66,7 +68,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    // This method handles GET request to retrieve the general metrics
+    @Operation(summary = "Method that retrieves the general metrics")
     @GetMapping("/api/products/metrics")
 	public ResponseEntity<List<Map<String, Object>>> getMetrics() {
         System.out.println("Fetching metrics");
@@ -76,7 +78,7 @@ public class ProductController {
         return ResponseEntity.ok(metrics);
     }
 
-    // This method handles GET request to retrieve all the categories
+    @Operation(summary = "Method that retrieves all the available categories")
     @GetMapping("/api/products/categories")
 	public ResponseEntity<List<String>> getCategories() {
         System.out.println("Fetching categories");
@@ -86,16 +88,16 @@ public class ProductController {
         return ResponseEntity.ok(categories);
     }
 
-    // This method handles POST requests to retrieve a new product
+    @Operation(summary = "Method that creates a new product")
     @PostMapping("/api/products")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        System.out.println("Creating new product: " + product.getName());
+        System.out.println("Creating new product");
         Product newProduct = productService.createProduct(product);
 
         return ResponseEntity.ok(newProduct);
     }
 
-    // This method handles PUT requests to update an existing product
+    @Operation(summary = "Method that updates a product")
     @PutMapping("/api/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         product.setId(id);
@@ -105,7 +107,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // This method handles POST requests to mark a product as out of stock
+    @Operation(summary = "Method that changes the product's stock to 0")
     @PostMapping("/api/products/{id}/outofstock")
     public ResponseEntity<Void> productOutOfStock(@PathVariable Long id) {
         productService.productOutOfStock(id);
@@ -113,7 +115,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    // This method handles PUT requests to mark a product as in stock
+    @Operation(summary = "Method that adds 10 to the product's stock")
     @PutMapping("/api/products/{id}/inStock")
     public ResponseEntity<Void> productInStock(@PathVariable Long id) {
         productService.productInStock(id);
@@ -121,7 +123,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    // This Method handles DELETE requests to delete an specific product
+    @Operation(summary = "Method that deletes a product")
     @DeleteMapping("api/products/{id}")
     public ResponseEntity<Void> productDelete(@PathVariable Long id) {
         productService.productDelete(id);
