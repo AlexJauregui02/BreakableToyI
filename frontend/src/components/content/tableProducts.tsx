@@ -113,7 +113,10 @@ export function TableProducts({
         {
             accessorKey: "expirationDate",
             header: "EXPIRATION DATE",
-            cell: ({ getValue }) => new Date(getValue() as string).toLocaleDateString(),
+            cell: ({ getValue }) => {
+                const value = getValue() as string | null | undefined;
+                return value ?? "";
+            },
         },
         {
             accessorKey: "inStock",
@@ -149,7 +152,7 @@ export function TableProducts({
             sorting,
             pagination: {
                 pageIndex: currentPage,
-                pageSize: 5
+                pageSize: 10
             },
         },
         getCoreRowModel: getCoreRowModel(),
