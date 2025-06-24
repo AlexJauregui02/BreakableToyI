@@ -4,7 +4,6 @@ import com.example.models.Product;
 import com.example.repositories.InMemoryProductRepository;
 import com.example.models.CustomPage;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,7 +28,6 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
-        product.setExpirationDate(LocalDate.now());
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
         return repository.save(product);
