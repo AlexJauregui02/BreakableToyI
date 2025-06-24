@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   category: string;
   unitPrice: number;
-  expirationDate: Date;
+  expirationDate: string | null;
   inStock: number;
 }
 
