@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { createProduct, updateProduct } from '../../api/services/productService';
 import CreatableSelect from 'react-select/creatable';
 import type { Product } from '../../types/product';
+import DatePicker from 'react-datepicker';
 
 export default function CreateEditProduct({
     onSuccess,
@@ -19,7 +20,7 @@ export default function CreateEditProduct({
     const [formData, setFormData] = useState({
         name: data?.name || '',
         category: data?.category || '',
-        expirationDate: data?.expirationDate,
+        expirationDate: data?.expirationDate || null,
         unitPrice: data?.unitPrice?.toString() || '',
         inStock: data?.inStock?.toString() || '',
     });
@@ -41,37 +42,25 @@ export default function CreateEditProduct({
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        let productData;
+        const productData = {
+            ...formData,
+            id: data?.id && data.id > 0 ? data.id : 0,
+            expirationDate: formData.expirationDate,
+            unitPrice: Number(formData.unitPrice),
+            inStock: Number(formData.inStock),
+        };
 
-        if (data?.id && data.id > 0) {
-            productData = {
-                ...formData,
-                id: data.id,
-                expirationDate: formData.expirationDate ? new Date(formData.expirationDate) : new Date(),
-                unitPrice: Number(formData.unitPrice),
-                inStock: Number(formData.inStock),
-            };
-            try {
+        try {
+            if (data?.id && data.id > 0) {
                 await updateProduct(productData);
-            }
-            catch (error) {
-                console.error('Error updating product:', error);
-            }
-        } else {
-            try {
-                productData = {
-                    ...formData,
-                    id: 0,
-                    expirationDate: formData.expirationDate ? new Date(formData.expirationDate) : new Date(),
-                    unitPrice: Number(formData.unitPrice),
-                    inStock: Number(formData.inStock),
-                };
+            } else {
                 await createProduct(productData);
-            } catch (error) {
-                console.error('Error submitting form:', error);
             }
+            onSuccess();
         }
-        onSuccess();
+        catch (error) {
+            console.error('Error updating product:', error);
+        }
     };
 
     return (
@@ -99,6 +88,7 @@ export default function CreateEditProduct({
                                 ? { value: formData.category, label: formData.category }
                                 : null
                         }
+                        required
                         onChange={handleCategoryChange}
                         className="mx-1 text-sm shadow-sm"
                         classNamePrefix="select"
@@ -131,19 +121,28 @@ export default function CreateEditProduct({
                         required
                     />
                 </label>
-                <label className='text-sm font-medium leading-none'>
+                <label className='text-sm font-medium'>
                     Expiration Date:
-                    <input
-                        type="date"
-                        name="expirationDate"
-                        value={
-                            formData.expirationDate instanceof Date
-                                ? formData.expirationDate.toISOString().slice(0, 10)
-                                : formData.expirationDate || ''
-                        }
-                        onChange={handleChange}
-                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                    />
+                    <div>
+                        <DatePicker
+                            showIcon
+                            selected={formData.expirationDate ? new Date(formData.expirationDate + "T00:00:00") : null}
+                            onChange={(date: Date | null) =>
+                                setFormData({
+                                    ...formData,
+                                    expirationDate: date
+                                        ? date.getFullYear() +
+                                        '-' +
+                                        String(date.getMonth() + 1).padStart(2, '0') +
+                                        '-' +
+                                        String(date.getDate()).padStart(2, '0')
+                                        : null
+                                })
+                            }
+                            className="border-1 rounded-sm"
+                            dateFormat="yyyy-MM-dd"
+                        />
+                    </div>
                 </label>
             </div>
             <Button

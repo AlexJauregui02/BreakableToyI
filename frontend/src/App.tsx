@@ -30,7 +30,7 @@ export default function App() {
     sortBy2: "",
     sortDirection2: "",
     page: 0,
-    size: 3
+    size: 10
 });
 
   const openModal = (type: ModalType, data?: Product) => {
