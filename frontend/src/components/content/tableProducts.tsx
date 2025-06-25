@@ -234,61 +234,65 @@ export function TableProducts({
                 </table>
             </div>
 
-            <div className="text-sm flex items-center justify-between mt-2 border border-gray-400 rounded-sm px-5 shadow-sm">
+            <div className="text-sm flex items-center justify-between mt-2 border border-gray-400 rounded-sm px-7 shadow-sm">
                 <div>
-                <span className="text-sm text-gray-700">
-                    Page {currentPage + 1} of {pageCount}
-                </span>
+                    <span className="text-sm text-gray-700">
+                        Page {currentPage + 1} of {pageCount}
+                    </span>
                 </div>
-                <div className="flex space-x-2">
-                <Button
-                    onClick={() => onTableChange({
-                    pageIndex: 0,
-                    sortBy1: sorting[0]?.id,
-                    sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                    sortBy2: sorting[1]?.id,
-                    sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-                    })}
-                    disabled={currentPage === 0}
-                >
-                    First
-                </Button>
-                <Button
-                    onClick={() => onTableChange({
-                    pageIndex: currentPage - 1,
-                    sortBy1: sorting[0]?.id,
-                    sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                    sortBy2: sorting[1]?.id,
-                    sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-                    })}
-                    disabled={currentPage === 0}
-                >
-                    Previous
-                </Button>
-                <Button
-                    onClick={() => onTableChange({
-                    pageIndex: currentPage + 1,
-                    sortBy1: sorting[0]?.id,
-                    sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                    sortBy2: sorting[1]?.id,
-                    sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-                    })}
-                    disabled={currentPage >= pageCount - 1}
-                >
-                    Next
-                </Button>
-                <Button
-                    onClick={() => onTableChange({
-                    pageIndex: pageCount - 1,
-                    sortBy1: sorting[0]?.id,
-                    sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                    sortBy2: sorting[1]?.id,
-                    sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-                    })}
-                    disabled={currentPage >= pageCount - 1}
-                >
-                    Last
-                </Button>
+                <div className="flex items-center justificy-center space-x-1 h-10">
+                    <Button
+                        onClick={() => onTableChange({
+                        pageIndex: 0,
+                        sortBy1: sorting[0]?.id,
+                        sortDirection1: sorting[0]?.desc ? "desc" : "asc",
+                        sortBy2: sorting[1]?.id,
+                        sortDirection2: sorting[1]?.desc ? "desc" : "asc",
+                        })}
+                        disabled={currentPage === 0}
+                        className='h-7 w-7 border border-gray-400'
+                    >
+                        {"<<"}
+                    </Button>
+                    <Button
+                        onClick={() => onTableChange({
+                        pageIndex: currentPage - 1,
+                        sortBy1: sorting[0]?.id,
+                        sortDirection1: sorting[0]?.desc ? "desc" : "asc",
+                        sortBy2: sorting[1]?.id,
+                        sortDirection2: sorting[1]?.desc ? "desc" : "asc",
+                        })}
+                        disabled={currentPage === 0}
+                        className='h-7 w-7 border border-gray-400'
+                    >
+                        {"<"}
+                    </Button>
+                    <Button
+                        onClick={() => onTableChange({
+                        pageIndex: currentPage + 1,
+                        sortBy1: sorting[0]?.id,
+                        sortDirection1: sorting[0]?.desc ? "desc" : "asc",
+                        sortBy2: sorting[1]?.id,
+                        sortDirection2: sorting[1]?.desc ? "desc" : "asc",
+                        })}
+                        disabled={currentPage >= pageCount - 1}
+                        className='h-7 w-7 border border-gray-400'
+                    >
+                        {">"}
+                    </Button>
+                    <Button
+                        onClick={() => onTableChange({
+                        pageIndex: pageCount - 1,
+                        sortBy1: sorting[0]?.id,
+                        sortDirection1: sorting[0]?.desc ? "desc" : "asc",
+                        sortBy2: sorting[1]?.id,
+                        sortDirection2: sorting[1]?.desc ? "desc" : "asc",
+                        })}
+                        disabled={currentPage >= pageCount - 1}
+                        className='h-7 w-7 border border-gray-400'
+                    >
+                        {">>"}
+                    </Button>
                 </div>
             </div>
 
