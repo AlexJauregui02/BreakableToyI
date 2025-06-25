@@ -1,1 +1,8 @@
 /Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/BackendApplication.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/config/CorsConfig.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/controllers/ProductController.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/models/CustomPage.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/models/Product.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/repositories/InMemoryProductRepository.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/repositories/ProductRepository.java
+/Users/alejandrojauregui/Desktop/BreakableToyI/backend/src/main/java/com/example/service/ProductService.java
