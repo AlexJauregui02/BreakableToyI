@@ -9,6 +9,7 @@ import { TableProducts } from './components/content/tableProducts';
 import { MetricsTable } from './components/content/metricsTable';
 import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
 import FilterProducts from './components/content/filterProducts';
+import { Card } from '@mui/material';
 
 type ModalType = 'create' | 'update' | 'delete' | null;
 
@@ -147,13 +148,15 @@ export default function App() {
           categories={categories}
         />
 
-        <Button
-          className='' 
-          variant='outline' 
-          onClick={() => {openModal('create')}}
-        >
-          New Product
-        </Button>
+        <div className='flex justify-start w-7/10'>
+          <Button
+            className='shadow-sm' 
+            variant='outline' 
+            onClick={() => {openModal('create')}}
+          >
+            New Product
+          </Button>
+        </div>
 
         <TableProducts 
           products={products} 

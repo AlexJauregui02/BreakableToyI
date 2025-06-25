@@ -82,9 +82,7 @@ export function TableProducts({
     const columns: ColumnDef<Product>[] = [
         {
             id: "stockToggle",
-            header: () => (
-                <input type="checkbox"/>
-            ),
+            header: "",
             cell: ({row}) => {
                 const product = row.original;
                 return (
@@ -98,12 +96,12 @@ export function TableProducts({
             },
         },
         {
-            accessorKey: "name",
-            header: "NAME",
-        },
-        {
             accessorKey: "category",
             header: "CATEGORY",
+        },
+        {
+            accessorKey: "name",
+            header: "NAME",
         },
         {
             accessorKey: "unitPrice",
@@ -191,16 +189,18 @@ export function TableProducts({
     }
 
     return (
-        <Card className="m-10 w-7/10 rounded-sm px-5">
-            <div className="overflow-x-auto mt-10">
-                <table className="divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+        <Card className="mt-5 w-7/10 rounded-sm p-10">
+            <div className="text-xl font-bold">Products</div>
+
+            <div className="overflow-x-auto mt-6 border border-gray-400 rounded-sm shadow-sm">
+                <table className="w-full divide-y divide-gray-400">
+                    <thead>
                         {table.getHeaderGroups().map((headerGroup) => (
                         <tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
                                     <th
                                         key={header.id}
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                                         onClick={() => handleSort(header.column.id)}
                                     >
                                         <div className="flex items-center cursor-pointer">
@@ -220,7 +220,7 @@ export function TableProducts({
                         ))}
                     </thead>
 
-                    <tbody className="bg-white divide-y divide-gray-200 text-sm rounded-md">
+                    <tbody className="bg-white divide-y divide-gray-300 text-sm rounded-md">
                         {table.getRowModel().rows.map((row) => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
@@ -234,7 +234,7 @@ export function TableProducts({
                 </table>
             </div>
 
-            <div className="flex items-center justify-between mt-4">
+            <div className="text-sm flex items-center justify-between mt-2 border border-gray-400 rounded-sm px-5 shadow-sm">
                 <div>
                 <span className="text-sm text-gray-700">
                     Page {currentPage + 1} of {pageCount}
