@@ -27,11 +27,12 @@ export default function ConfirmDeleteProduct({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 items-center">
+            <label className='font-semibold'>Are you sure you want to delete this product?</label>
             <Button
                 type="submit"
-                className="w-full"
-                variant="default"
+                className="w-1/2 font-bold"
+                variant="delete"
             >
                 DELETE
             </Button>

@@ -64,66 +64,92 @@ export default function CreateEditProduct({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4">
-            <div className="flex flex-col space-y-2">
-                <label className='text-sm font-medium leading-none'>
-                    Name:
-                    <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                        required
-                    />
-                </label>
-
-                <label className='text-sm font-medium leading-none'>
-                    Category:
-                    <CreatableSelect
-                        isClearable
-                        options={categoryOptions}
-                        value={
-                            formData.category
-                                ? { value: formData.category, label: formData.category }
-                                : null
-                        }
-                        required
-                        onChange={handleCategoryChange}
-                        className="mx-1 text-sm shadow-sm"
-                        classNamePrefix="select"
-                        placeholder="Select or create a category"
-                    />
-                </label>
-                <label className='text-sm font-medium leading-none'>
-                    In Stock:
-                    <input
-                        type="number"
-                        name="inStock"
-                        value={formData.inStock}
-                        onChange={handleChange}
-                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                        min={0}
-                        max={100000}
-                        required
-                    />
-                </label>
-                <label className='text-sm font-medium leading-none'>
-                    Unit Price:
-                    <input
-                        type="number"
-                        name="unitPrice"
-                        value={formData.unitPrice}
-                        onChange={handleChange}
-                        className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
-                        min={0}
-                        max={100000}
-                        required
-                    />
-                </label>
-                <label className='text-sm font-medium'>
-                    Expiration Date:
+        <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
+            <div className="space-y-2 text-sm">
+                <div className='grid grid-cols-2'>
                     <div>
+                        <label className='text-sm font-medium leading-none'>
+                            Name:
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
+                            required
+                        />
+                    </div>
+                    <div className='grid grid-cols-2 gap-5 w-full'>
+                        <div className='w-full'>
+                            <label className='text-sm font-medium leading-none'>
+                                In Stock:
+                            </label>
+                            <input
+                                type="number"
+                                name="inStock"
+                                value={formData.inStock}
+                                onChange={handleChange}
+                                className="h-7 w-full rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
+                                min={0}
+                                max={100000}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className='text-sm font-medium leading-none'>
+                                Unit Price:
+                            </label> 
+                            <input
+                                type="number"
+                                name="unitPrice"
+                                value={formData.unitPrice}
+                                onChange={handleChange}
+                                className="h-7 w-full rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
+                                min={0}
+                                max={100000}
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className='grid grid-cols-2 gap-5 text-sm w-full max-w-xl'>
+                    <div>
+                        <label className='text-sm font-medium leading-none'>
+                            Category:
+                        </label>
+                        <CreatableSelect
+                            isClearable
+                            options={categoryOptions}
+                            value={
+                                formData.category
+                                    ? { value: formData.category, label: formData.category }
+                                    : null
+                            }
+                            required
+                            unstyled
+                            onChange={handleCategoryChange}
+                            classNames={{
+                                control: () => 'px-2 rounded-sm border shadow-sm',
+                                option: () => `bg-white rounded-sm pl-2`,
+                                menu: () => 'bg-white border-1 rounded-sm',
+                            }}
+                            styles={{
+                                control: (base) => ({
+                                    ...base,
+                                    minHeight: '33px',
+                                    width: '100%'
+                                })
+                            }}
+                            classNamePrefix="select"
+                            placeholder="Select/Create a category"
+                        />
+                    </div>
+                    <div className='w-full'>
+                        <label className='font-medium'>
+                            Expiration Date:
+                        </label>
                         <DatePicker
                             showIcon
                             selected={formData.expirationDate ? new Date(formData.expirationDate + "T00:00:00") : null}
@@ -139,16 +165,17 @@ export default function CreateEditProduct({
                                         : null
                                 })
                             }
-                            className="border-1 rounded-sm"
-                            dateFormat="yyyy-MM-dd"
+                            className="border-1 rounded-sm w-full"
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
-                </label>
+                </div>
             </div>
+
             <Button
                 type="submit"
-                className="w-full"
-                variant="default"
+                className="w-1/2 "
+                variant="filled"
             >
                 Done
             </Button>

@@ -9,7 +9,7 @@ function Card({
   return (
     <div
       className={cn(
-        'bg-card text-card-foreground flex flex-col rounded-xl border py-6 shadow-sm',
+        'bg-white text-card-foreground flex flex-col rounded-xl border py-6 shadow-sm',
         className,
       )}
       {...props}

@@ -24,7 +24,7 @@ export function Modal({ isOpen, onClose, children, title, description, size = 'm
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`w-full ${sizeClasses[size]}`}>
+      <DialogContent className={`w-full ${sizeClasses[size]} p-8`}>
         <DialogHeader>
           {title && <DialogTitle>{title}</DialogTitle>}
           {description && <DialogDescription>{description}</DialogDescription>}
