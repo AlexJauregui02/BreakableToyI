@@ -12,6 +12,8 @@ import {
     flexRender
 } from "@tanstack/react-table";
 import { Card } from "../ui/card";
+import editIcon from "../../assets/pencil.png";
+import deleteIcon from "../../assets/trash.png";
 
 interface TableProductsProps {
     products: Product[];
@@ -126,18 +128,22 @@ export function TableProducts({
             cell: ({row}) => {
                 const product = row.original;
                 return (
-                    <>
-                        <Button className="h-2 border-1 mr-2" 
+                    <div className="flex items-center">
+                        <Button 
+                            className="h-4 border-1 mr-2 font-semibold" 
                             onClick={() => { editProduct && editProduct(product) }}
                         >
+                            <img src={editIcon} alt="editIcon" className='w-3 h-3'/>
                             Edit
                         </Button>
-                        <Button className="h-2 border-1"
+                        <Button 
+                            className="h-4 border-1 font-semibold"
                             onClick={() => { deleteProduct && deleteProduct(product) }}
                         >
+                            <img src={deleteIcon} alt="deleteIcon" className='w-4 h-4'/>
                             Delete
                         </Button>
-                    </>
+                    </div>
                 );
             },
         },
@@ -208,10 +214,12 @@ export function TableProducts({
                                                 header.column.columnDef.header,
                                                 header.getContext()
                                             )}
-                                            {{
-                                                asc: " ^",
-                                                desc: " ⌄",
-                                            }[header.column.getIsSorted() as string] ?? null}
+                                            <span style={{ display: 'inline-block', width: 16, textAlign: 'center' }}>
+                                                {{
+                                                    asc: " ^",
+                                                    desc: " ⌄",
+                                                }[header.column.getIsSorted() as string] ?? "\u00A0"}
+                                            </span>
 
                                         </div>
                                     </th>
@@ -224,7 +232,7 @@ export function TableProducts({
                         {table.getRowModel().rows.map((row) => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="px-6 py-2 whitespace-nowrap">
+                                    <td key={cell.id} className="px-8 py-2 whitespace-nowrap">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}
@@ -237,7 +245,7 @@ export function TableProducts({
             <div className="text-sm flex items-center justify-between mt-2 border border-gray-400 rounded-sm px-7 shadow-sm">
                 <div>
                     <span className="text-sm text-gray-700">
-                        Page {currentPage + 1} of {pageCount}
+                        Page {table.getRowModel().rows.length === 0 ? 0 : currentPage + 1} of {pageCount}
                     </span>
                 </div>
                 <div className="flex items-center justificy-center space-x-1 h-10">

@@ -141,7 +141,7 @@ export default function App() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-center'>
+      <div className='flex flex-col items-center justify-center bg-gray-100'>
 
         <FilterProducts
           filterSearch={(name, categories, size) => {handleFilters(name, categories, size)}}
@@ -150,8 +150,8 @@ export default function App() {
 
         <div className='flex justify-start w-7/10'>
           <Button
-            className='shadow-sm' 
-            variant='outline' 
+            variant='filled' 
+            size='lg'
             onClick={() => {openModal('create')}}
           >
             New Product

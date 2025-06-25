@@ -175,7 +175,7 @@ export default function CreateEditProduct({
             <Button
                 type="submit"
                 className="w-1/2 "
-                variant="default"
+                variant="filled"
             >
                 Done
             </Button>

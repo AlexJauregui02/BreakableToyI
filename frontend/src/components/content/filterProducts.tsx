@@ -51,17 +51,19 @@ export default function FilterProducts({
             <div className="text-xl font-bold">Select a Filter</div>
         
             <div className="flex flex-col space-y-4 border-0 w-1/2 mt-4">
-                <div className="flex flex-col space-y-2 grid grid-col-3">
-                    <label className='text-sm font-medium leading-none'>
-                        Name:
+                <div className="flex flex-col space-y-2">
+                    <div>
+                        <label className='text-sm font-medium leading-none'>
+                            Name:
+                        </label>
                         <input
                             id="name"
                             type="text"
-                            className="mx-1 h-7 rounded-sm border border-input px-3 py-1 text-sm shadow-sm"
+                            className="w-full h-9 rounded-sm border border-input px-2 py-1 text-sm shadow-sm"
                             onChange={handleChangeName}
                         />
-                    </label>
-                    <label className='text-sm font-medium leading-none my-3'>
+                    </div>
+                    <label className='text-sm font-medium leading-none'>
                         Category:
                         <Select
                             isMulti
@@ -94,8 +96,8 @@ export default function FilterProducts({
                     </label>
                 </div>
                 <Button
-                    className="w-full border-1"
-                    variant="default"
+                    className="w-full"
+                    variant="filled"
                     onClick={handleFilterSearch}
                 >
                     Search
