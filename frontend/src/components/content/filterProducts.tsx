@@ -53,7 +53,7 @@ export default function FilterProducts({
             <div className="flex flex-col space-y-4 border-0 w-1/2 mt-4">
                 <div className="flex flex-col space-y-2">
                     <div>
-                        <label className='text-sm font-medium leading-none'>
+                        <label htmlFor='name' className='text-sm font-medium leading-none'>
                             Name:
                         </label>
                         <input

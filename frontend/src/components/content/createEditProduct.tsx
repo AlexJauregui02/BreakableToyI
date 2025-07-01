@@ -68,10 +68,11 @@ export default function CreateEditProduct({
             <div className="space-y-2 text-sm">
                 <div className='grid grid-cols-2'>
                     <div>
-                        <label className='text-sm font-medium leading-none'>
+                        <label htmlFor="name" className='text-sm font-medium leading-none'>
                             Name:
                         </label>
                         <input
+                            id='name'
                             type="text"
                             name="name"
                             value={formData.name}
@@ -82,10 +83,11 @@ export default function CreateEditProduct({
                     </div>
                     <div className='grid grid-cols-2 gap-5 w-full'>
                         <div className='w-full'>
-                            <label className='text-sm font-medium leading-none'>
+                            <label htmlFor="inStock" className='text-sm font-medium leading-none'>
                                 In Stock:
                             </label>
                             <input
+                                id='inStock'
                                 type="number"
                                 name="inStock"
                                 value={formData.inStock}
@@ -97,10 +99,11 @@ export default function CreateEditProduct({
                             />
                         </div>
                         <div>
-                            <label className='text-sm font-medium leading-none'>
+                            <label htmlFor="unitPrice" className='text-sm font-medium leading-none'>
                                 Unit Price:
                             </label> 
                             <input
+                                id='unitPrice'
                                 type="number"
                                 name="unitPrice"
                                 value={formData.unitPrice}

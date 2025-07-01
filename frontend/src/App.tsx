@@ -9,7 +9,6 @@ import { TableProducts } from './components/content/tableProducts';
 import { MetricsTable } from './components/content/metricsTable';
 import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
 import FilterProducts from './components/content/filterProducts';
-import { Card } from '@mui/material';
 
 type ModalType = 'create' | 'update' | 'delete' | null;
 
