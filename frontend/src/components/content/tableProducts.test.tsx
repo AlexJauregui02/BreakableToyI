@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TableProducts } from './tableProducts';
 import type { Product } from '../../types/product';

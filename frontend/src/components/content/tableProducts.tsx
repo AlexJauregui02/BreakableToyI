@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from "react";
 import type { Product } from "../../types/product";
 import { outOfStockProduct, inStockProduct } from "../../api/services/productService";
