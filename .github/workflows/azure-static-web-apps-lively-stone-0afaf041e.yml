@@ -21,7 +21,7 @@ jobs:
           lfs: false
 
       - name: Show VITE_BACKEND_API_URL
-        run: echo "👉 VITE_BACKEND_API_URL = $VITE_BACKEND_API_URL"
+        run: echo "👉 VITE_BACKEND_API_URL = $secrets.VITE_BACKEND_API_URL"
 
       - name: Build And Deploy
         id: builddeploy
