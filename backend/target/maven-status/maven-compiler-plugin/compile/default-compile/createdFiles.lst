@@ -1,1 +1,9 @@
+com/example/repositories/ProductRepository.class
+com/example/controllers/ProductController.class
+com/example/models/Product.class
+com/example/config/CorsConfig.class
+com/example/models/CustomPage.class
 com/example/BackendApplication.class
+com/example/service/ProductService.class
+com/example/repositories/InMemoryProductRepository.class
+com/example/config/CorsConfig$1.class
