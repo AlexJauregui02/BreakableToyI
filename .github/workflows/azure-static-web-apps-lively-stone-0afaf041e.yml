@@ -21,7 +21,7 @@ jobs:
           lfs: false
 
       - name: Show VITE_BACKEND_API_URL
-        run: echo "👉 VITE_BACKEND_API_URL = $secrets.VITE_BACKEND_API_URL"
+        run: echo "👉 VITE_BACKEND_API_URL = {{ $secrets.VITE_BACKEND_API_URL" }}
 
       - name: Build And Deploy
         id: builddeploy
@@ -36,6 +36,8 @@ jobs:
           api_location: "./frontend/src/api" # Api source code path - optional
           output_location: "dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env:
+          VITE_BACKEND_API_URL: ${{ secrets.VITE_BACKEND_API_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
