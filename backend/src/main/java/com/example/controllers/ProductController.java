@@ -32,7 +32,7 @@ public class ProductController {
 
     @Operation(summary = "Method that retrieves products with parameters for filters and sorting")
     @GetMapping("/api/products")
-	public ResponseEntity<CustomPage<Product>> getProducts(
+	public ResponseEntity<CustomPage> getProducts(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) List<String> category,
         @RequestParam(required = false) String availability,
@@ -54,7 +54,7 @@ public class ProductController {
             }
         }
 
-        CustomPage<Product> products = productService.getProducts(
+        CustomPage products = productService.getProducts(
             name,
             category,
             availabilityFilter,

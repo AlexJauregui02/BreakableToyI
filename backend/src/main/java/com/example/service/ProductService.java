@@ -1,11 +1,14 @@
 package com.example.service;
 
 import com.example.models.Product;
-import com.example.repositories.InMemoryProductRepository;
+import com.example.repositories.ProductRepository;
 import com.example.models.CustomPage;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +18,74 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
-    private final InMemoryProductRepository repository;
+    private final ProductRepository repository;
 
-    public ProductService(InMemoryProductRepository inMemoryRepository) {
-        this.repository = inMemoryRepository;
+    public ProductService(ProductRepository repository) {
+        this.repository = repository;
     }
 
-    public CustomPage<Product> getProducts(String name, List<String> categories, Boolean availability,
+    public CustomPage getProducts(String name, List<String> categories, Boolean availability,
                                            String sortBy1, String sortDirection1, String sortBy2, String sortDirection2,
                                            int page, int size) {
-        return repository.getProducts(name, categories, availability, sortBy1, sortDirection1, sortBy2, sortDirection2, page, size);
+        List<Product> filtered = applyFilters(repository.findAll(), name, categories, availability);
+        filtered.sort(createComparator(sortBy1, sortDirection1, sortBy2, sortDirection2));
+        List<Product> paginated = applyPagination(filtered, page, size);
+        return new CustomPage(paginated, page, size, filtered.size());
+    }
+
+    private List<Product> applyFilters(List<Product> products, String nameFilter, List<String> categoryFilters, Boolean availabilityFilter) {
+        return products.stream()
+            .filter(p -> nameFilter == null || p.getName().toLowerCase().contains(nameFilter.toLowerCase()))
+            .filter(p -> categoryFilters == null || categoryFilters.isEmpty() || categoryFilters.contains(p.getCategory()))
+            .filter(p -> availabilityFilter == null || (availabilityFilter && p.getInStock() > 0) || (!availabilityFilter && p.getInStock() == 0))
+            .collect(Collectors.toList());
+    }
+
+    private Comparator<Product> createComparator(String sortBy1, String sortDirection1, String sortBy2, String sortDirection2) {
+        Comparator<Product> comp = getProductComparator(sortBy1, sortDirection1);
+        if(sortBy2 != null && !sortBy2.isEmpty()) {
+            comp = comp.thenComparing(getProductComparator(sortBy2, sortDirection2));
+        }
+        return comp;
+    }
+
+    private Comparator<Product> getProductComparator(String sortBy, String sortDirection) {
+        Comparator<Product> comparator;
+        if (sortBy == null) {
+            comparator = Comparator.comparing(Product::getId);
+        } else {
+            switch(sortBy) {
+                case "name":
+                    comparator = Comparator.comparing(Product::getName);
+                    break;
+                case "category":
+                    comparator = Comparator.comparing(Product::getCategory);
+                    break;
+                case "unitPrice":
+                    comparator = Comparator.comparing(Product::getUnitPrice);
+                    break;
+                case "inStock":
+                    comparator = Comparator.comparing(Product::getInStock);
+                    break;
+                case "expirationDate":
+                    comparator = Comparator.comparing(p -> p.getExpirationDate() == null ? LocalDate.MAX : p.getExpirationDate());
+                    break;
+                default:
+                    comparator = Comparator.comparing(Product::getId);
+                    break;
+            }
+        }
+        return sortDirection.equalsIgnoreCase("desc") ? comparator.reversed() : comparator;
+    }
+
+    private List<Product> applyPagination(List<Product> products, int page, int size) {
+        int total = products.size();
+        int start = page * size;
+        if (start > total) {
+            return Collections.emptyList();
+        }
+        int end = Math.min(start + size, total);
+        return products.subList(start, end);
     }
 
     public Product createProduct(Product product) {

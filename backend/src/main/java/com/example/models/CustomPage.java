@@ -2,14 +2,14 @@ package com.example.models;
 
 import java.util.List;
 
-public class CustomPage<T> {
-    private List<T> content;
+public class CustomPage {
+    private List<Product> content;
     private int pageNumber;
     private int pageSize;
     private int totalElements;
 
     public CustomPage(
-        List<T> content, 
+        List<Product> content, 
         int pageNumber, 
         int pageSize, 
         int totalElements
@@ -20,7 +20,7 @@ public class CustomPage<T> {
         this.totalElements = totalElements;
     }
 
-    public List<T> getContent(){ return content; }
+    public List<Product> getContent(){ return content; }
     public int getPageNumber() { return pageNumber; }
     public int getPageSize() { return pageSize; }
     public int getTotalElements() { return totalElements; } 

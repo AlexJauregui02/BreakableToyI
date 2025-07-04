@@ -2,7 +2,7 @@ package com.example.backend;
 
 import com.example.models.Product;
 import com.example.models.CustomPage;
-import com.example.repositories.InMemoryProductRepository;
+import com.example.repositories.ProductRepository;
 import com.example.service.ProductService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class BackendApplicationTests {
 
 	@Mock
-	private InMemoryProductRepository repository;
+	private ProductRepository repository;
 
 	@InjectMocks
 	private ProductService productService;
@@ -46,9 +46,9 @@ class BackendApplicationTests {
 		p2.setInStock(3);
 
 		List<Product> products = java.util.Arrays.asList(p1, p2);
-		CustomPage<Product> page = new CustomPage<>(products, 0, 10, 2);
+		CustomPage page = new CustomPage(products, 0, 10, 2);
 
-		Mockito.when(repository.getProducts(
+		Mockito.when(productService.getProducts(
 			"",
 			java.util.Collections.emptyList(),
 			null,
@@ -60,7 +60,7 @@ class BackendApplicationTests {
 			10 
 		)).thenReturn(page);
 
-		CustomPage<Product> result = productService.getProducts(
+		CustomPage result = productService.getProducts(
 			"", java.util.Collections.emptyList(), null, "", "", "", "", 0, 10
 		);
 
