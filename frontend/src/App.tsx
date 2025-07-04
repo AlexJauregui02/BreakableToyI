@@ -140,20 +140,22 @@ export default function App() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-center'>
+      <div className='flex flex-col items-center justify-center bg-gray-100'>
 
         <FilterProducts
           filterSearch={(name, categories, size) => {handleFilters(name, categories, size)}}
           categories={categories}
         />
 
-        <Button
-          className='' 
-          variant='outline' 
-          onClick={() => {openModal('create')}}
-        >
-          New Product
-        </Button>
+        <div className='flex justify-start w-7/10'>
+          <Button
+            variant='filled' 
+            size='lg'
+            onClick={() => {openModal('create')}}
+          >
+            New Product
+          </Button>
+        </div>
 
         <TableProducts 
           products={products} 
