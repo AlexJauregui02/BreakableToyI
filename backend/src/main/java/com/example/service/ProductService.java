@@ -50,7 +50,7 @@ public class ProductService implements ProductServiceInterface {
 
     public void productInStock(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         product.setInStock(product.getInStock() + 10); // Default in-stock quantity
         product.setUpdatedAt(LocalDateTime.now());
         repository.save(product);

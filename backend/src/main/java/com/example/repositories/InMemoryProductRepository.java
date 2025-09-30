@@ -1,6 +1,7 @@
 package com.example.repositories;
 
 import com.example.models.Product;
+import com.example.exception.ProductNotFoundException;
 import com.example.models.CustomPage;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class InMemoryProductRepository implements ProductRepository {
         } else {
             Product existingProduct = db.get(product.getId());
             if (existingProduct == null) {
-                throw new RuntimeException("Product not found with ID: " + product.getId());
+                throw new ProductNotFoundException(product.getId());
             }
             existingProduct.setName(product.getName());
             existingProduct.setCategory(product.getCategory());
