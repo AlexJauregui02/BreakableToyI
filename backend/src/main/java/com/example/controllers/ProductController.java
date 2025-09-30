@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.service.ProductService;
+import com.example.service.ProductServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceInterface productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductServiceInterface productService) {
         this.productService = productService;
     }
 

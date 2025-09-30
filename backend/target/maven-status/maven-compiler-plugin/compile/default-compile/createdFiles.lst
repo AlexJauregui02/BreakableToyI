@@ -1,3 +1,4 @@
+com/example/service/ProductServiceInterface.class
 com/example/repositories/ProductRepository.class
 com/example/controllers/ProductController.class
 com/example/models/Product.class

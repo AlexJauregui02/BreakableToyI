@@ -2,19 +2,21 @@ package com.example.service;
 
 import com.example.models.Product;
 import com.example.repositories.InMemoryProductRepository;
+import com.example.exception.ProductNotFoundException;
 import com.example.models.CustomPage;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductService {
+public class ProductService implements ProductServiceInterface {
     private final InMemoryProductRepository repository;
 
     public ProductService(InMemoryProductRepository inMemoryRepository) {
@@ -40,7 +42,7 @@ public class ProductService {
 
     public void productOutOfStock(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         product.setInStock(0);
         product.setUpdatedAt(LocalDateTime.now());
         repository.save(product);
