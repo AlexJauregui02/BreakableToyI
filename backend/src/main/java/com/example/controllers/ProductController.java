@@ -1,10 +1,10 @@
 package com.example.controllers;
 
 import com.example.models.Product;
-import com.example.models.CustomPage;
+import com.example.models.ProductPage;
+import com.example.models.MetricRow;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -30,9 +30,9 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @Operation(summary = "Method that retrieves products with parameters for filters and sorting")
+    @Operation(summary = "Get products with filters and sorting")
     @GetMapping("/api/products")
-	public ResponseEntity<CustomPage<Product>> getProducts(
+	public ResponseEntity<ProductPage> getProducts(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) List<String> category,
         @RequestParam(required = false) String availability,
@@ -43,8 +43,6 @@ public class ProductController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
     ) {
-        System.out.println("Fetching products");
-
         Boolean availabilityFilter = null;
         if (availability != null && !availability.isEmpty()) {
             if (availability.equalsIgnoreCase("in_stock")) {
@@ -54,7 +52,7 @@ public class ProductController {
             }
         }
 
-        CustomPage<Product> products = productService.getProducts(
+        ProductPage products = productService.getProducts(
             name,
             category,
             availabilityFilter,
@@ -68,46 +66,40 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "Method that retrieves the general metrics")
+    @Operation(summary = "Get all the general metrics")
     @GetMapping("/api/products/metrics")
-	public ResponseEntity<List<Map<String, Object>>> getMetrics() {
-        System.out.println("Fetching metrics");
-
-        List<Map<String, Object>> metrics = productService.getInventoryMetrics(); 
+	public ResponseEntity<List<MetricRow>> getMetrics() {
+        List<MetricRow> metrics = productService.getInventoryMetrics(); 
 
         return ResponseEntity.ok(metrics);
     }
 
-    @Operation(summary = "Method that retrieves all the available categories")
+    @Operation(summary = "Get all the available categories")
     @GetMapping("/api/products/categories")
 	public ResponseEntity<List<String>> getCategories() {
-        System.out.println("Fetching categories");
-
         List<String> categories = productService.getAllCategories(); 
 
         return ResponseEntity.ok(categories);
     }
 
-    @Operation(summary = "Method that creates a new product")
+    @Operation(summary = "Create a new product")
     @PostMapping("/api/products")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        System.out.println("Creating new product");
         Product newProduct = productService.createProduct(product);
 
         return ResponseEntity.ok(newProduct);
     }
 
-    @Operation(summary = "Method that updates a product")
+    @Operation(summary = "Update an existing product")
     @PutMapping("/api/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         product.setId(id);
         Product updatedProduct = productService.updateProduct(product);
-        System.out.println("Updating product: " + product.getId());
 
         return ResponseEntity.ok(updatedProduct);
     }
 
-    @Operation(summary = "Method that changes the product's stock to 0")
+    @Operation(summary = "Updates the product's stock to 0")
     @PostMapping("/api/products/{id}/outofstock")
     public ResponseEntity<Void> productOutOfStock(@PathVariable Long id) {
         productService.productOutOfStock(id);
@@ -115,7 +107,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Method that adds 10 to the product's stock")
+    @Operation(summary = "Adds 10 to the product's stock")
     @PutMapping("/api/products/{id}/inStock")
     public ResponseEntity<Void> productInStock(@PathVariable Long id) {
         productService.productInStock(id);

@@ -1,8 +1,8 @@
 package com.example.repositories;
 
 import com.example.models.Product;
+import com.example.models.ProductPage;
 import com.example.exception.ProductNotFoundException;
-import com.example.models.CustomPage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +52,7 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public CustomPage<Product> getProducts(String nameFilter, List<String> categoryFilters, Boolean availabilityFilter,
+    public ProductPage getProducts(String nameFilter, List<String> categoryFilters, Boolean availabilityFilter,
                                            String sortBy1, String sortDirection1, String sortBy2, String sortDirection2, 
                                            int page, int size) {
         List<Product> filteredProducts = db.values().stream()
@@ -74,7 +74,7 @@ public class InMemoryProductRepository implements ProductRepository {
 
         List<Product> paginateProducts = filteredProducts.subList(start, end);
 
-        return new CustomPage<>(paginateProducts, page, size, totalItems);
+        return new ProductPage(paginateProducts, page, size, totalItems);
     }
 
     private Comparator<Product> getProductComparator(String sortBy, String sortDirection) {

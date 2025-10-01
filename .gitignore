@@ -16,3 +16,8 @@ logs/
 .DS_Store
 # Ignore package lock files
 package-lock.json
+
+# Ignore Java class files
+*.class
+# Ignore Maven target directory
+target/

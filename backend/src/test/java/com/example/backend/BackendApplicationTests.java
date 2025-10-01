@@ -1,7 +1,9 @@
 package com.example.backend;
 
 import com.example.models.Product;
+import com.example.models.ProductPage;
 import com.example.models.CustomPage;
+import com.example.models.MetricRow;
 import com.example.repositories.InMemoryProductRepository;
 import com.example.service.ProductService;
 
@@ -46,7 +48,7 @@ class BackendApplicationTests {
 		p2.setInStock(3);
 
 		List<Product> products = java.util.Arrays.asList(p1, p2);
-		CustomPage<Product> page = new CustomPage<>(products, 0, 10, 2);
+		ProductPage page = new ProductPage(products, 0, 10, 2);
 
 		Mockito.when(repository.getProducts(
 			"",
@@ -212,21 +214,21 @@ class BackendApplicationTests {
 		Mockito.when(repository.findAll()).thenReturn(allProducts);
 		Mockito.when(repository.findAllCategories()).thenReturn(allCategories);
 
-		List<java.util.Map<String, Object>> metrics = productService.getInventoryMetrics();
+		List<MetricRow> metrics = productService.getInventoryMetrics();
 
 
 		assertNotNull(metrics);
 		assertEquals(3, metrics.size());
 
-		java.util.Map<String, Object> cat1Row = metrics.stream()
-			.filter(row -> "Category1".equals(row.get("category")))
+		MetricRow cat1Row = metrics.stream()
+			.filter(row -> "Category1".equals(row.getCategory()))
 			.findFirst()
 			.orElse(null);
 
 		assertNotNull(cat1Row);
-		assertEquals(2, cat1Row.get("productCount"));
-		assertEquals(20.0, (Double)cat1Row.get("totalValue"));
-		assertEquals(10.0, (Double)cat1Row.get("averagePrice"));
+		assertEquals(2, cat1Row.getProductCount());
+		assertEquals(20.0, cat1Row.getTotalValue());
+		assertEquals(10.0, cat1Row.getAveragePrice());
 	}
 
 }

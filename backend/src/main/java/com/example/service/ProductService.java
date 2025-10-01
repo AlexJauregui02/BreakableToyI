@@ -1,14 +1,13 @@
 package com.example.service;
 
 import com.example.models.Product;
+import com.example.models.ProductPage;
 import com.example.repositories.InMemoryProductRepository;
 import com.example.exception.ProductNotFoundException;
-import com.example.models.CustomPage;
+import com.example.models.MetricRow;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public class ProductService implements ProductServiceInterface {
         this.repository = inMemoryRepository;
     }
 
-    public CustomPage<Product> getProducts(String name, List<String> categories, Boolean availability,
+    public ProductPage getProducts(String name, List<String> categories, Boolean availability,
                                            String sortBy1, String sortDirection1, String sortBy2, String sortDirection2,
                                            int page, int size) {
         return repository.getProducts(name, categories, availability, sortBy1, sortDirection1, sortBy2, sortDirection2, page, size);
@@ -64,8 +63,8 @@ public class ProductService implements ProductServiceInterface {
         return repository.findAllCategories();
     }
 
-    public List<Map<String, Object>> getInventoryMetrics() {
-        List<Map<String, Object>> metricsTable = new ArrayList<>();
+    public List<MetricRow> getInventoryMetrics() {
+        List<MetricRow> metricsTable = new ArrayList<>();
         List<Product> allProducts = repository.findAll();
         List<String> allCategories = repository.findAllCategories();
 
@@ -81,7 +80,7 @@ public class ProductService implements ProductServiceInterface {
                 .mapToDouble(p -> p.getUnitPrice() * p.getInStock())
                 .sum();
 
-            metricsTable.add(createMetricsRow(
+            metricsTable.add(new MetricRow(
                 category,
                 categoryInStock,
                 categoryValue,
@@ -97,7 +96,7 @@ public class ProductService implements ProductServiceInterface {
                 .mapToDouble(p -> p.getUnitPrice() * p.getInStock())
                 .sum();
         
-        metricsTable.add(createMetricsRow(
+        metricsTable.add(new MetricRow(
             "Overall", 
             allProductsInStock,
             allProductsCategoryValue, 
@@ -109,15 +108,5 @@ public class ProductService implements ProductServiceInterface {
 
     private double calculateAvgPrice(double totalPrice, int totalStock) {
        return  totalStock != 0 ? totalPrice / totalStock : 0.0;
-    }
-
-    private Map<String, Object> createMetricsRow(String category, int count, Double totalValue, Double avgPrice) {
-        Map<String, Object> row = new LinkedHashMap<>();
-        row.put("category", category);
-        row.put("productCount", count);
-        row.put("totalValue", totalValue);
-        row.put("averagePrice", avgPrice);
-
-        return row;
     }
 }
