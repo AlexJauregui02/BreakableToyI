@@ -3,47 +3,45 @@ import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import Select from "react-select";
+import Select, { type MultiValue, type SingleValue } from "react-select";
+
+import type { FilterProductsProps, FilterOption } from "@/types/product";
 
 export default function FilterProducts({
   filterSearch,
   categories = [],
-}: {
-  filterSearch: (
-    name: string,
-    category: string[],
-    availability: string,
-  ) => void;
-  categories: string[];
-}) {
+}: FilterProductsProps) {
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string[]>([]);
   const [availability, setAvailability] = useState<string>("");
 
-  const categoryOptions = categories.map((val) => ({ value: val, label: val }));
-  const availabilityOptions = [
+  const categoryOptions: FilterOption[] = categories.map((val) => ({ 
+    value: val, 
+    label: val 
+  }));
+
+  const availabilityOptions: FilterOption[] = [
     { value: "", label: "Select..." },
     { value: "in_stock", label: "In Stock" },
     { value: "out_of_stock", label: "Out Of Stock" },
   ];
 
   const filteredAvailabilityOptions = availabilityOptions.filter(
-    (opt) => opt.value === "" || opt.value !== availability,
+    (opt) => opt.value === "" || opt.value !== availability
   );
 
   const handleChangeName = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { value } = e.target;
-    setName(value);
+    setName(e.target.value);
   };
 
-  const handleCategoryChange = (selected: any) => {
-    setCategory(selected ? selected.map((opt: any) => opt.value) : []);
+  const handleCategoryChange = (selected: MultiValue<FilterOption>) => {
+    setCategory(selected.map((opt) => opt.value));
   };
 
-  const handleAvailabilityChange = (selected: any) => {
-    setAvailability(selected.value);
+  const handleAvailabilityChange = (selected: SingleValue<FilterOption>) => {
+    setAvailability(selected?.value ?? "");
   };
 
   const handleFilterSearch = () => {

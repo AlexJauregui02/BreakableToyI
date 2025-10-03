@@ -48,3 +48,14 @@ export interface MetricProp {
   totalValue: number;
   averagePrice: number;
 }
+
+export interface FilterProductsProps {
+  filterSearch: (
+    name: string,
+    category: string[],
+    availability: string,
+  ) => void;
+  categories: string[];
+}
+
+export type FilterOption = { value: string; label: string };
