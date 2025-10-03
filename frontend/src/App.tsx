@@ -141,15 +141,7 @@ export default function App() {
   useEffect(() => {
     fetchProducts();
   }, [
-    getDataProps.name,
-    getDataProps.category,
-    getDataProps.availability,
-    getDataProps.sortBy1,
-    getDataProps.sortDirection1,
-    getDataProps.sortBy2,
-    getDataProps.sortDirection2,
-    getDataProps.page,
-    getDataProps.size,
+    getDataProps
   ]);
 
   return (

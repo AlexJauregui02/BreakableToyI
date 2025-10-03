@@ -1,13 +1,7 @@
-import { useState } from "react";
-import type { Product } from "@/types/product";
-import {
-  outOfStockProduct,
-  inStockProduct,
-} from "@/api/services/productService";
+import type { Product, TableProductsProps } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import {
   useReactTable,
-  type SortingState,
   type ColumnDef,
   getCoreRowModel,
   getSortedRowModel,
@@ -17,21 +11,8 @@ import { Card } from "@/components/ui/card";
 import editIcon from "@/assets/pencil.png";
 import deleteIcon from "@/assets/trash.png";
 
-interface TableProductsProps {
-  products: Product[];
-  onStockChange: () => Promise<void>;
-  editProduct?: (data: Product) => void;
-  deleteProduct?: (data: Product) => void;
-  onTableChange: (params: {
-    pageIndex: number;
-    sortBy1?: string;
-    sortDirection1?: string;
-    sortBy2?: string;
-    sortDirection2?: string;
-  }) => void;
-  pageCount: number;
-  currentPage: number;
-}
+import { useTableSorting } from "@/lib/useTableSorting";
+import { useStockHandler } from "@/lib/useStockHandler";
 
 export function TableProducts({
   products,
@@ -42,45 +23,8 @@ export function TableProducts({
   pageCount,
   currentPage,
 }: TableProductsProps) {
-  const [loadingId, setLoadingId] = useState<number | null>(null);
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const handleSort = (columnId: string) => {
-    let newSorting: SortingState = [];
-
-    const existingSortIndex = sorting.findIndex((sort) => sort.id === columnId);
-
-    if (existingSortIndex >= 0) {
-      const currentSort = sorting[existingSortIndex];
-
-      if (!currentSort.desc) {
-        newSorting = sorting.map((sort) =>
-          sort.id === columnId ? { ...sort, desc: true } : sort,
-        );
-      } else {
-        newSorting = sorting.filter((sort) => sort.id !== columnId);
-        if (existingSortIndex === 0 && newSorting.length > 0) {
-          newSorting = [newSorting[0]];
-        }
-      }
-    } else {
-      if (sorting.length >= 2) {
-        newSorting = [{ id: columnId, desc: false }, sorting[0]];
-      } else {
-        newSorting = [...sorting, { id: columnId, desc: false }];
-      }
-    }
-
-    setSorting(newSorting);
-
-    onTableChange({
-      pageIndex: 0,
-      sortBy1: newSorting[0]?.id,
-      sortDirection1: newSorting[0]?.desc ? "desc" : "asc",
-      sortBy2: newSorting[1]?.id,
-      sortDirection2: newSorting[1]?.desc ? "desc" : "asc",
-    });
-  };
+  const { sorting, handleSort, updateTable } = useTableSorting(onTableChange);
+  const { loadingId, handleStockChange } = useStockHandler(onStockChange);
 
   const columns: ColumnDef<Product>[] = [
     {
@@ -186,19 +130,6 @@ export function TableProducts({
     },
   });
 
-  const handleStockChange = async (product: Product) => {
-    setLoadingId(product.id);
-    try {
-      await (product.inStock > 0
-        ? outOfStockProduct(product.id)
-        : inStockProduct(product.id));
-    } catch (error) {
-      console.error("Error changing stock:", error);
-    }
-    await onStockChange();
-    setLoadingId(null);
-  };
-
   return (
     <Card className="mt-5 w-7/10 rounded-sm p-10">
       <div className="text-xl font-bold">Products</div>
@@ -261,60 +192,28 @@ export function TableProducts({
         </div>
         <div className="flex items-center justificy-center space-x-1 h-10">
           <Button
-            onClick={() =>
-              onTableChange({
-                pageIndex: 0,
-                sortBy1: sorting[0]?.id,
-                sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                sortBy2: sorting[1]?.id,
-                sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-              })
-            }
+            onClick={() => updateTable(0)}
             disabled={currentPage === 0}
             className="h-7 w-7 border border-gray-400"
           >
             {"<<"}
           </Button>
           <Button
-            onClick={() =>
-              onTableChange({
-                pageIndex: currentPage - 1,
-                sortBy1: sorting[0]?.id,
-                sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                sortBy2: sorting[1]?.id,
-                sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-              })
-            }
+            onClick={() => updateTable(currentPage - 1)}
             disabled={currentPage === 0}
             className="h-7 w-7 border border-gray-400"
           >
             {"<"}
           </Button>
           <Button
-            onClick={() =>
-              onTableChange({
-                pageIndex: currentPage + 1,
-                sortBy1: sorting[0]?.id,
-                sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                sortBy2: sorting[1]?.id,
-                sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-              })
-            }
+            onClick={() => updateTable(currentPage + 1)}
             disabled={currentPage >= pageCount - 1}
             className="h-7 w-7 border border-gray-400"
           >
             {">"}
           </Button>
           <Button
-            onClick={() =>
-              onTableChange({
-                pageIndex: pageCount - 1,
-                sortBy1: sorting[0]?.id,
-                sortDirection1: sorting[0]?.desc ? "desc" : "asc",
-                sortBy2: sorting[1]?.id,
-                sortDirection2: sorting[1]?.desc ? "desc" : "asc",
-              })
-            }
+            onClick={() => updateTable(pageCount - 1)}
             disabled={currentPage >= pageCount - 1}
             className="h-7 w-7 border border-gray-400"
           >
