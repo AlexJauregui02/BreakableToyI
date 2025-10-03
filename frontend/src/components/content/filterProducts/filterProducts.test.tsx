@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import FilterProducts from './filterProducts';
+import { render, screen, fireEvent } from "@testing-library/react";
+import FilterProducts from "@/components/content/filterProducts/filterProducts";
 
 const categories = ['Category1', 'Category2'];
 

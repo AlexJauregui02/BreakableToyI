@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { MetricsTable } from './metricsTable';
+import { render, screen } from "@testing-library/react";
+import { MetricsTable } from "@/components/content/metricsTable/metricsTable";
 
 const mockMetrics = [
   {

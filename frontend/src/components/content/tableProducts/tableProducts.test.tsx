@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import { TableProducts } from './tableProducts';
-import type { Product } from '../../types/product';
+import { render, screen } from "@testing-library/react";
+import { TableProducts } from "@/components/content/tableProducts/tableProducts";
+import type { Product } from "@/types/product";
 
-jest.mock('../../api/services/productService', () => ({
+jest.mock('@/api/services/productService', () => ({
   outOfStockProduct: jest.fn(),
   inStockProduct: jest.fn(),
 }));

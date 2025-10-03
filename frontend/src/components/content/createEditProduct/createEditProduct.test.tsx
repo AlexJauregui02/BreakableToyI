@@ -1,8 +1,8 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import CreateEditProduct from './createEditProduct';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import CreateEditProduct from "@/components/content/createEditProduct/createEditProduct";
 
-jest.mock('../../api/services/productService', () => ({
+jest.mock("@/api/services/productService", () => ({
   createProduct: jest.fn(() => Promise.resolve()),
   updateProduct: jest.fn(() => Promise.resolve()),
 }));

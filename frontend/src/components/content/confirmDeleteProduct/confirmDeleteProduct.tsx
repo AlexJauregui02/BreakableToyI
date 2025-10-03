@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from '../ui/button';
-import { deleteProduct } from '../../api/services/productService';
-import type { Product } from '../../types/product';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { deleteProduct } from "@/api/services/productService";
+import type { Product } from "@/types/product";
 
 export default function ConfirmDeleteProduct({
     onSuccess,

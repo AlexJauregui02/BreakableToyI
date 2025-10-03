@@ -1,10 +1,9 @@
-import React from 'react';
-import { useState } from 'react';
-import { Button } from '../ui/button';
-import { createProduct, updateProduct } from '../../api/services/productService';
-import CreatableSelect from 'react-select/creatable';
-import type { Product } from '../../types/product';
-import DatePicker from 'react-datepicker';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { createProduct, updateProduct } from "@/api/services/productService";
+import CreatableSelect from "react-select/creatable";
+import type { Product } from "@/types/product";
+import DatePicker from "react-datepicker";
 
 export default function CreateEditProduct({
     onSuccess,

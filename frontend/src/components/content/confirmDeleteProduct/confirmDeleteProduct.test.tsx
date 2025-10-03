@@ -1,6 +1,6 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
-jest.mock('../../api/client', () => ({
+jest.mock("@/api/client", () => ({
   __esModule: true,
   fetchApi: jest.fn(),
 }));

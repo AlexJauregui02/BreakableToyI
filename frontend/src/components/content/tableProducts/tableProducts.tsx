@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Product } from "../../types/product";
-import { outOfStockProduct, inStockProduct } from "../../api/services/productService";
-import { Button } from "../ui/button";
+import type { Product } from "@/types/product";
+import { outOfStockProduct, inStockProduct } from "@/api/services/productService";
+import { Button } from "@/components/ui/button";
 import {
     useReactTable,
     type SortingState,
@@ -10,9 +10,9 @@ import {
     getSortedRowModel,
     flexRender
 } from "@tanstack/react-table";
-import { Card } from "../ui/card";
-import editIcon from "../../assets/pencil.png";
-import deleteIcon from "../../assets/trash.png";
+import { Card } from "@/components/ui/card";
+import editIcon from "@/assets/pencil.png";
+import deleteIcon from "@/assets/trash.png";
 
 interface TableProductsProps {
     products: Product[];

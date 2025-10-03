@@ -1,10 +1,9 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-import Select from 'react-select';
+import Select from "react-select";
 
 export default function FilterProducts({
     filterSearch,

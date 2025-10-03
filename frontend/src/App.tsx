@@ -4,11 +4,11 @@ import { getProducts, getMetrics, getCategories } from './api/services/productSe
 import type { Product, getProductProps } from './types/product';
 import { Button } from './components/ui/button';
 import { Modal } from './components/ui/modal';
-import CreateEditProduct from './components/content/createEditProduct';
-import { TableProducts } from './components/content/tableProducts';
-import { MetricsTable } from './components/content/metricsTable';
-import ConfirmDeleteProduct from './components/content/confirmDeleteProduct';
-import FilterProducts from './components/content/filterProducts';
+import CreateEditProduct from './components/content/createEditProduct/createEditProduct';
+import { TableProducts } from './components/content/tableProducts/tableProducts';
+import { MetricsTable } from './components/content/metricsTable/metricsTable';
+import ConfirmDeleteProduct from './components/content/confirmDeleteProduct/confirmDeleteProduct';
+import FilterProducts from './components/content/filterProducts/filterProducts';
 
 type ModalType = 'create' | 'update' | 'delete' | null;
 
