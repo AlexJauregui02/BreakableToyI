@@ -1,11 +1,5 @@
 import { Card } from "@/components/ui/card";
-
-interface MetricProp {
-  category: string;
-  productCount: number;
-  totalValue: number;
-  averagePrice: number;
-}
+import { type MetricProp } from "@/types/product";
 
 export function MetricsTable({ metrics }: { metrics: MetricProp[] }) {
   return (

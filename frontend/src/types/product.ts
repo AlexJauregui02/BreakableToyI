@@ -41,3 +41,10 @@ export interface CustomPage<T> {
   pageSize: number;
   totalElements: number;
 }
+
+export interface MetricProp {
+  category: string;
+  productCount: number;
+  totalValue: number;
+  averagePrice: number;
+}

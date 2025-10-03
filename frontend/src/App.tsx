@@ -1,11 +1,11 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   getProducts,
   getMetrics,
   getCategories,
 } from "./api/services/productService";
-import type { Product, getProductProps } from "./types/product";
+import type { Product, getProductProps, MetricProp } from "./types/product";
 import { Button } from "./components/ui/button";
 import { Modal } from "./components/ui/modal";
 import CreateEditProduct from "./components/content/createEditProduct/createEditProduct";
@@ -18,7 +18,7 @@ type ModalType = "create" | "update" | "delete" | null;
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [metrics, setMetrics] = useState([]);
+  const [metrics, setMetrics] = useState<MetricProp[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [currentModal, setCurrentModal] = useState<ModalType>(null);
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
@@ -36,9 +36,29 @@ export default function App() {
     size: 10,
   });
 
+  const fetchProducts = useCallback(async (data = getDataProps) => {
+    try {
+      const [resProducts, resMetrics, resCategories] = await Promise.all([
+        getProducts(data),
+        getMetrics(),
+        getCategories(),
+      ]);
+
+      setProducts(resProducts?.content ?? []);
+      setTotalItems(resProducts?.totalElements ?? 0);
+      setMetrics(resMetrics ?? []);
+      setCategories(resCategories ?? []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [getDataProps]);
+
   const openModal = (type: ModalType, data?: Product) => {
     if (categories.length === 0) {
-      fetchProducts().then(() => setCurrentModal(type));
+      getCategories().then((res) => {
+        setCategories(res ?? []);
+        setCurrentModal(type);
+      });
     } else {
       setCurrentModal(type);
     }
@@ -53,43 +73,18 @@ export default function App() {
     setTempProduct(null);
   };
 
-  const fetchProducts = async (data = getDataProps) => {
-    try {
-      const response = await getProducts(data);
-      setProducts(response?.content ?? []);
-      setTotalItems(response?.totalElements ?? 0);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-
-    try {
-      const response = await getMetrics();
-      setMetrics(response ?? []);
-    } catch (error) {
-      console.error("Error fetching metrics:", error);
-    }
-
-    try {
-      const response = await getCategories();
-      setCategories(response ?? []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
   const handleFilters = async (
     name: string,
     categories: string[],
     availability: string,
   ) => {
-    const newProps: getProductProps = {
-      ...getDataProps,
+    setGetDataProps((prev) => ({
+      ...prev,
       name,
       category: categories,
       availability,
       page: 0,
-    };
-    setGetDataProps(newProps);
+    }));
   };
 
   const modalContents = {
@@ -140,9 +135,7 @@ export default function App() {
 
   useEffect(() => {
     fetchProducts();
-  }, [
-    getDataProps
-  ]);
+  }, [getDataProps, fetchProducts]);
 
   return (
     <>
