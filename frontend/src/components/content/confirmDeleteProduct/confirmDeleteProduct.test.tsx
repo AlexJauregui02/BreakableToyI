@@ -6,7 +6,7 @@ jest.mock("@/api/client", () => ({
 }));
 
 const mockDeleteProduct = jest.fn(() => Promise.resolve());
-jest.mock('../../api/services/productService', () => ({
+jest.mock("../../api/services/productService", () => ({
   __esModule: true,
   deleteProduct: mockDeleteProduct,
 }));
@@ -15,15 +15,24 @@ beforeEach(() => {
   mockDeleteProduct.mockClear();
 });
 
-test('calls deleteProduct and onSuccess on submit', async () => {
-  const { default: ConfirmDeleteProduct } = await import('./confirmDeleteProduct');
+test("calls deleteProduct and onSuccess on submit", async () => {
+  const { default: ConfirmDeleteProduct } = await import(
+    "./confirmDeleteProduct"
+  );
 
   const mockOnSuccess = jest.fn();
-  const product = { id: 123, name: 'Test', category: '', unitPrice: 0, expirationDate: '', inStock: 0 };
+  const product = {
+    id: 123,
+    name: "Test",
+    category: "",
+    unitPrice: 0,
+    expirationDate: "",
+    inStock: 0,
+  };
 
   render(<ConfirmDeleteProduct onSuccess={mockOnSuccess} data={product} />);
 
-  fireEvent.click(screen.getByRole('button', { name: /delete/i }));
+  fireEvent.click(screen.getByRole("button", { name: /delete/i }));
 
   await waitFor(() => {
     expect(mockDeleteProduct).toHaveBeenCalledWith(123);

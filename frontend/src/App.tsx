@@ -1,19 +1,22 @@
-import './App.css'
-import { useEffect, useState } from 'react';
-import { getProducts, getMetrics, getCategories } from './api/services/productService';
-import type { Product, getProductProps } from './types/product';
-import { Button } from './components/ui/button';
-import { Modal } from './components/ui/modal';
-import CreateEditProduct from './components/content/createEditProduct/createEditProduct';
-import { TableProducts } from './components/content/tableProducts/tableProducts';
-import { MetricsTable } from './components/content/metricsTable/metricsTable';
-import ConfirmDeleteProduct from './components/content/confirmDeleteProduct/confirmDeleteProduct';
-import FilterProducts from './components/content/filterProducts/filterProducts';
+import "./App.css";
+import { useEffect, useState } from "react";
+import {
+  getProducts,
+  getMetrics,
+  getCategories,
+} from "./api/services/productService";
+import type { Product, getProductProps } from "./types/product";
+import { Button } from "./components/ui/button";
+import { Modal } from "./components/ui/modal";
+import CreateEditProduct from "./components/content/createEditProduct/createEditProduct";
+import { TableProducts } from "./components/content/tableProducts/tableProducts";
+import { MetricsTable } from "./components/content/metricsTable/metricsTable";
+import ConfirmDeleteProduct from "./components/content/confirmDeleteProduct/confirmDeleteProduct";
+import FilterProducts from "./components/content/filterProducts/filterProducts";
 
-type ModalType = 'create' | 'update' | 'delete' | null;
+type ModalType = "create" | "update" | "delete" | null;
 
 export default function App() {
-
   const [products, setProducts] = useState<Product[]>([]);
   const [metrics, setMetrics] = useState([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -30,8 +33,8 @@ export default function App() {
     sortBy2: "",
     sortDirection2: "",
     page: 0,
-    size: 10
-});
+    size: 10,
+  });
 
   const openModal = (type: ModalType, data?: Product) => {
     if (categories.length === 0) {
@@ -40,7 +43,7 @@ export default function App() {
       setCurrentModal(type);
     }
 
-    if ((type === 'update' || type === 'delete') && data) {
+    if ((type === "update" || type === "delete") && data) {
       setTempProduct(data);
     }
   };
@@ -50,33 +53,35 @@ export default function App() {
     setTempProduct(null);
   };
 
-  const fetchProducts = async (
-    data = getDataProps
-  ) => {
+  const fetchProducts = async (data = getDataProps) => {
     try {
       const response = await getProducts(data);
       setProducts(response?.content ?? []);
       setTotalItems(response?.totalElements ?? 0);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     }
 
     try {
       const response = await getMetrics();
       setMetrics(response ?? []);
     } catch (error) {
-      console.error('Error fetching metrics:', error)
+      console.error("Error fetching metrics:", error);
     }
 
     try {
       const response = await getCategories();
       setCategories(response ?? []);
     } catch (error) {
-      console.error('Error fetching categories:', error)
+      console.error("Error fetching categories:", error);
     }
   };
 
-  const handleFilters = async (name: string, categories: string[], availability: string) => {
+  const handleFilters = async (
+    name: string,
+    categories: string[],
+    availability: string,
+  ) => {
     const newProps: getProductProps = {
       ...getDataProps,
       name,
@@ -89,39 +94,48 @@ export default function App() {
 
   const modalContents = {
     create: {
-      title: 'Create Product',
-      description: 'Create a new product.',
-      content: <CreateEditProduct 
-                  onSuccess={() =>{
-                    fetchProducts();
-                    closeModal();
-                  }}
-                  categories={categories}/>,
-      size: 'md'
+      title: "Create Product",
+      description: "Create a new product.",
+      content: (
+        <CreateEditProduct
+          onSuccess={() => {
+            fetchProducts();
+            closeModal();
+          }}
+          categories={categories}
+        />
+      ),
+      size: "md",
     },
     update: {
-      title: 'Update Product',
-      description: 'Update an existing product.',
-      content: <CreateEditProduct 
-                  onSuccess={() =>{
-                    fetchProducts();
-                    closeModal();
-                  }} 
-                  data={tempProduct}
-                  categories={categories}/>,
-      size: 'md'
+      title: "Update Product",
+      description: "Update an existing product.",
+      content: (
+        <CreateEditProduct
+          onSuccess={() => {
+            fetchProducts();
+            closeModal();
+          }}
+          data={tempProduct}
+          categories={categories}
+        />
+      ),
+      size: "md",
     },
     delete: {
-      title: 'Delete Product',
-      description: '',
-      content: <ConfirmDeleteProduct
-                  onSuccess={() =>{
-                    fetchProducts();
-                    closeModal();
-                  }} 
-                  data={tempProduct}/>,
-      size: 'md'
-    }
+      title: "Delete Product",
+      description: "",
+      content: (
+        <ConfirmDeleteProduct
+          onSuccess={() => {
+            fetchProducts();
+            closeModal();
+          }}
+          data={tempProduct}
+        />
+      ),
+      size: "md",
+    },
   };
 
   useEffect(() => {
@@ -140,30 +154,33 @@ export default function App() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-center bg-gray-100'>
-
+      <div className="flex flex-col items-center justify-center bg-gray-100">
         <FilterProducts
-          filterSearch={(name, categories, size) => {handleFilters(name, categories, size)}}
+          filterSearch={(name, categories, size) => {
+            handleFilters(name, categories, size);
+          }}
           categories={categories}
         />
 
-        <div className='flex justify-start w-7/10'>
+        <div className="flex justify-start w-7/10">
           <Button
-            variant='filled' 
-            size='lg'
-            onClick={() => {openModal('create')}}
+            variant="filled"
+            size="lg"
+            onClick={() => {
+              openModal("create");
+            }}
           >
             New Product
           </Button>
         </div>
 
-        <TableProducts 
-          products={products} 
-          onStockChange={fetchProducts} 
-          editProduct={(data) => openModal('update', data)}
-          deleteProduct={(data) => openModal('delete', data)}
+        <TableProducts
+          products={products}
+          onStockChange={fetchProducts}
+          editProduct={(data) => openModal("update", data)}
+          deleteProduct={(data) => openModal("delete", data)}
           onTableChange={(params) => {
-            setGetDataProps(prev => ({
+            setGetDataProps((prev) => ({
               ...prev,
               ...params,
               page: params.pageIndex ?? 0,
@@ -173,9 +190,7 @@ export default function App() {
           currentPage={getDataProps.page}
         />
 
-        <MetricsTable
-          metrics={metrics}
-        />
+        <MetricsTable metrics={metrics} />
 
         {currentModal && (
           <Modal
@@ -183,14 +198,12 @@ export default function App() {
             onClose={closeModal}
             title={modalContents[currentModal].title}
             description={modalContents[currentModal].description}
-            size='md'
+            size="md"
           >
             {modalContents[currentModal].content}
-
           </Modal>
         )}
-
       </div>
     </>
-  )
+  );
 }

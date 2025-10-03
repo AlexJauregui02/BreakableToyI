@@ -8,20 +8,20 @@ export interface Product {
 }
 
 export interface getProductProps {
-    name: String,
-    category: String[],
-    availability: String,
-    sortBy1: String,
-    sortDirection1: String,
-    sortBy2: String,
-    sortDirection2: String,
-    page: number,
-    size: number
+  name: String;
+  category: String[];
+  availability: String;
+  sortBy1: String;
+  sortDirection1: String;
+  sortBy2: String;
+  sortDirection2: String;
+  page: number;
+  size: number;
 }
 
 export interface CustomPage<T> {
-  content: T[],
-  pageNumber: number,
-  pageSize: number,
-  totalElements: number
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
 }

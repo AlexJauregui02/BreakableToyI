@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { TableProducts } from "@/components/content/tableProducts/tableProducts";
 import type { Product } from "@/types/product";
 
-jest.mock('@/api/services/productService', () => ({
+jest.mock("@/api/services/productService", () => ({
   outOfStockProduct: jest.fn(),
   inStockProduct: jest.fn(),
 }));
@@ -10,15 +10,15 @@ jest.mock('@/api/services/productService', () => ({
 const mockProducts: Product[] = [
   {
     id: 1,
-    name: 'Test Product',
-    category: 'Test Category',
+    name: "Test Product",
+    category: "Test Category",
     unitPrice: 10,
-    expirationDate: '2025-01-01',
+    expirationDate: "2025-01-01",
     inStock: 5,
   },
 ];
 
-test('renders product name in table', () => {
+test("renders product name in table", () => {
   render(
     <TableProducts
       products={mockProducts}
@@ -28,7 +28,7 @@ test('renders product name in table', () => {
       onTableChange={jest.fn()}
       pageCount={1}
       currentPage={0}
-    />
+    />,
   );
-  expect(screen.getByText('Test Product')).toBeInTheDocument();
+  expect(screen.getByText("Test Product")).toBeInTheDocument();
 });

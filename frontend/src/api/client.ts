@@ -1,4 +1,3 @@
-
 const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 interface ApiError {
@@ -7,27 +6,27 @@ interface ApiError {
 }
 
 export async function fetchApi<T>(
-    endpoint: string,
-    options: RequestInit = {}
+  endpoint: string,
+  options: RequestInit = {},
 ): Promise<T | undefined> {
-    const url = `${API_BASE_URL}${endpoint}`;
-    console.log(`Fetching ${url}`);
-    const response = await fetch(url, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        ...options,
-    });
-    console.log(`Response status: ${response.status}`);
+  const url = `${API_BASE_URL}${endpoint}`;
+  console.log(`Fetching ${url}`);
+  const response = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    ...options,
+  });
+  console.log(`Response status: ${response.status}`);
 
-    if (!response.ok) {
-        const errorData: ApiError = await response.json();
-        throw new Error(`Error ${errorData.status}: ${errorData.message}`);
-    }
+  if (!response.ok) {
+    const errorData: ApiError = await response.json();
+    throw new Error(`Error ${errorData.status}: ${errorData.message}`);
+  }
 
-    if (response.status === 204) {
-        return undefined;
-    }
+  if (response.status === 204) {
+    return undefined;
+  }
 
-    return response.json();
+  return response.json();
 }
