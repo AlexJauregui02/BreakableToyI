@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import Select, { type MultiValue, type SingleValue } from "react-select";
 
-import type { FilterProductsProps, FilterOption } from "@/types/product";
+import type { FilterProductsProps, Option } from "@/types/product";
 
 export default function FilterProducts({
   filterSearch,
@@ -15,12 +15,12 @@ export default function FilterProducts({
   const [category, setCategory] = useState<string[]>([]);
   const [availability, setAvailability] = useState<string>("");
 
-  const categoryOptions: FilterOption[] = categories.map((val) => ({ 
+  const categoryOptions: Option[] = categories.map((val) => ({ 
     value: val, 
     label: val 
   }));
 
-  const availabilityOptions: FilterOption[] = [
+  const availabilityOptions: Option[] = [
     { value: "", label: "Select..." },
     { value: "in_stock", label: "In Stock" },
     { value: "out_of_stock", label: "Out Of Stock" },
@@ -36,11 +36,11 @@ export default function FilterProducts({
     setName(e.target.value);
   };
 
-  const handleCategoryChange = (selected: MultiValue<FilterOption>) => {
+  const handleCategoryChange = (selected: MultiValue<Option>) => {
     setCategory(selected.map((opt) => opt.value));
   };
 
-  const handleAvailabilityChange = (selected: SingleValue<FilterOption>) => {
+  const handleAvailabilityChange = (selected: SingleValue<Option>) => {
     setAvailability(selected?.value ?? "");
   };
 

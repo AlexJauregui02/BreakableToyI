@@ -58,4 +58,10 @@ export interface FilterProductsProps {
   categories: string[];
 }
 
-export type FilterOption = { value: string; label: string };
+export type ProductCRUDProps = {
+  onSuccess: () => void;
+  data?: Product | null;
+  categories?: string[];
+};
+
+export type Option = { value: string; label: string };

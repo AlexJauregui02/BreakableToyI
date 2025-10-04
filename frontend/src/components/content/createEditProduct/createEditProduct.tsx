@@ -1,19 +1,18 @@
 import React, { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { createProduct, updateProduct } from "@/api/services/productService";
+import type { Option, ProductCRUDProps } from "@/types/product";
+
 import CreatableSelect from "react-select/creatable";
-import type { Product } from "@/types/product";
 import DatePicker from "react-datepicker";
+import type { SingleValue } from "react-select";
 
 export default function CreateEditProduct({
   onSuccess,
   data,
   categories = [],
-}: {
-  onSuccess: () => void;
-  data?: Product | null;
-  categories: string[];
-}) {
+}: ProductCRUDProps) {
   const categoryOptions = categories.map((val) => ({ value: val, label: val }));
 
   const [formData, setFormData] = useState({
@@ -33,11 +32,16 @@ export default function CreateEditProduct({
     });
   };
 
-  const handleCategoryChange = (selected: any) => {
+  const handleCategoryChange = (selected: SingleValue<Option>) => {
+    const value = selected ? selected.value : "";
     setFormData({
       ...formData,
-      category: selected ? selected.value : "",
+      category: value,
     });
+
+    if (value && !categories.includes(value)) {
+        categories.push(value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -170,13 +174,7 @@ export default function CreateEditProduct({
               onChange={(date: Date | null) =>
                 setFormData({
                   ...formData,
-                  expirationDate: date
-                    ? date.getFullYear() +
-                      "-" +
-                      String(date.getMonth() + 1).padStart(2, "0") +
-                      "-" +
-                      String(date.getDate()).padStart(2, "0")
-                    : null,
+                  expirationDate: date ? date.toISOString().slice(0, 10) : null,
                 })
               }
               className="border-1 rounded-sm w-full"
