@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.service.ProductServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 
 @RestController
 public class ProductController {
@@ -91,7 +93,7 @@ public class ProductController {
 
     @Operation(summary = "Create a new product")
     @PostMapping("/api/products")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         Product newProduct = productService.createProduct(product);
 
         return ResponseEntity.ok(newProduct);
@@ -99,7 +101,7 @@ public class ProductController {
 
     @Operation(summary = "Update an existing product")
     @PutMapping("/api/products/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
         product.setId(id);
         Product updatedProduct = productService.updateProduct(product);
 
@@ -157,5 +159,15 @@ public class ProductController {
     public ResponseEntity<ErrorResponse> handleNotFound(ProductNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        String errorMsg = ex.getBindingResult().getFieldErrors().stream()
+            .map(e -> e.getField() + ": " + e.getDefaultMessage())
+            .reduce((m1, m2) -> m1 + "; " + m2)
+            .orElse("Validation error");
+        ErrorResponse error = new ErrorResponse(errorMsg, HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

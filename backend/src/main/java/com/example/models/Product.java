@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "Product information")
 public class Product {
@@ -11,14 +12,18 @@ public class Product {
     @Schema(description = "Unique identifier of the product", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
     @Schema(description = "Name of the product", example = "Apple")
+    @NotNull(message = "Name cannot be null")
     private String name;
     @Schema(description = "Category of the product", example = "Fruits")
+    @NotNull(message = "Category cannot be null")
     private String category;
     @Schema(description = "Unit price of the product", example = "0.99")
+    @NotNull(message = "Unit price cannot be null")
     private double unitPrice;
     @Schema(description = "Expiration date of the product", example = "2024-12-31")
     private LocalDate expirationDate;
     @Schema(description = "Number of items in stock", example = "100")
+    @NotNull(message = "In-stock quantity cannot be null")
     private Integer inStock;
 
     @Schema(description = "Timestamp when the product was created", example = "2024-01-01T12:00:00")
