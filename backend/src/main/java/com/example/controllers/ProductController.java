@@ -2,13 +2,20 @@ package com.example.controllers;
 
 import com.example.models.Product;
 import com.example.models.ProductPage;
+import com.example.exception.ProductNegativePriceException;
+import com.example.exception.ProductNegativeStockException;
+import com.example.exception.ProductNotFoundException;
+import com.example.exception.ProductWithNullFieldException;
+import com.example.models.ErrorResponse;
 import com.example.models.MetricRow;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -120,5 +127,35 @@ public class ProductController {
     public ResponseEntity<Void> productDelete(@PathVariable Long id) {
         productService.productDelete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
+        ErrorResponse error = new ErrorResponse("Unexpected error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(ProductNegativePriceException.class)
+    public ResponseEntity<ErrorResponse> handleNegativePrice(ProductNegativePriceException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ProductNegativeStockException.class)
+    public ResponseEntity<ErrorResponse> handleNegativeStock(ProductNegativeStockException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ProductWithNullFieldException.class)
+    public ResponseEntity<ErrorResponse> handleNullField(ProductWithNullFieldException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ProductNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }
